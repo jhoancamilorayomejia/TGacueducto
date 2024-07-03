@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
-	"nombre_del_modulo/db"
 
+	"github.com/jhoancamilorayomejia/TGacueducto/db"
 	"github.com/joho/godotenv"
 )
 
