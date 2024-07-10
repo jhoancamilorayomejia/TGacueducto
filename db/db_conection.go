@@ -3,16 +3,24 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"os"
 
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
 // DB es la instancia de la base de datos que se usará en toda la aplicación
 var DB *sql.DB
 
-// Connect establece y retorna una conexión a la base de datos PostgreSQL
-func Connect() (*sql.DB, error) {
+// ConnectDB establece y retorna una conexión a la base de datos PostgreSQL
+func ConnectDB() (*sql.DB, error) {
+	// Cargar las variables de entorno desde el archivo .env
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
+
 	// Obtener las variables de entorno para la conexión a la base de datos
 	host := os.Getenv("DB_HOST")
 	port := os.Getenv("DB_PORT")

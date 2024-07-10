@@ -1,11 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
-	"github.com/jhoancamilorayomejia/TGacueducto/db"
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+
+	"github.com/jhoancamilorayomejia/TGacueducto/controllers"
+	"github.com/jhoancamilorayomejia/TGacueducto/db"
 )
 
 func main() {
@@ -14,11 +16,21 @@ func main() {
 		log.Fatalf("Error loading .env file")
 	}
 
-	conn, err := db.Connect()
+	conn, err := db.ConnectDB()
 	if err != nil {
 		log.Fatalf("Error connecting to the database: %v", err)
 	}
 	defer conn.Close()
 
-	fmt.Println("Successfully connected to the database!")
+	r := gin.Default()
+
+	db.ConnectDB()
+
+	r.GET("/api/admins", controllers.GetAdmins)
+
+	// Cambia el puerto del backend a 8081
+	err = r.Run(":8081")
+	if err != nil {
+		log.Fatalf("Error starting server: %v", err)
+	}
 }

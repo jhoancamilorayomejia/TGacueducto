@@ -10,19 +10,19 @@ import (
 
 // Admin representa la estructura de la tabla admin en la base de datos
 type Admin struct {
-	ID       int    `json:"IDadmin"`
-	Nombre   string `json:"Nombre"`
-	Apellido string `json:"Apellido"`
+	IDadmin  int    `json:"idadmin"`
+	Nombre   string `json:"nombre"`
+	Apellido string `json:"apellido"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
-	TipoUser string `json:"TipoUser"`
+	Tipouser string `json:"tipouser"`
 }
 
 // GetAdmins maneja la solicitud para obtener todos los registros de la tabla admin
 func GetAdmins(c *gin.Context) {
 	var admins []Admin
 
-	rows, err := db.DB.Query("SELECT IDadmin, Nombre, Apellido, email, password, TipoUser FROM admin")
+	rows, err := db.DB.Query("SELECT idadmin, nombre, apellido, email, password, tipouser FROM admin")
 	if err != nil {
 		log.Printf("Error querying admin table: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying admin table"})
@@ -32,7 +32,7 @@ func GetAdmins(c *gin.Context) {
 
 	for rows.Next() {
 		var admin Admin
-		err := rows.Scan(&admin.ID, &admin.Nombre, &admin.Apellido, &admin.Email, &admin.Password, &admin.TipoUser)
+		err := rows.Scan(&admin.IDadmin, &admin.Nombre, &admin.Apellido, &admin.Email, &admin.Password, &admin.Tipouser)
 		if err != nil {
 			log.Printf("Error scanning admin row: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error scanning admin row"})
