@@ -1,11 +1,15 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import TableView from '../components/TableView.vue';
+import TableClientes from '../components/TableClientes.vue';
+import LoginView from '../components/LoginView.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
-  { path: '/api/admins', component: TableView }
+  { path: '/api/admins', component: TableView },
+  { path: '/clientes', component: TableClientes },
+  { path: '/login', component: LoginView }
 ];
 
 const router = new VueRouter({

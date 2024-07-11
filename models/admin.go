@@ -1,7 +1,12 @@
 package models
 
+// Admin representa la estructura de la tabla admin en la base de datos
 type Admin struct {
-	ID    int    `db:"IDadmin"`
-	Name  string `db:"Nombre"`
-	Email string `db:"email"`
+	IDadmin   int    `json:"idadmin"`
+	Nombre    string `json:"nombre"`
+	Apellido  string `json:"apellido"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
+	Tipouser  string `json:"tipouser"`
+	SecretKey string `json:"secret_key"`
 }

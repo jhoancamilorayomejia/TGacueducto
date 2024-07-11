@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import axios from '../api/axios';
+
 export default {
   data() {
     return {
@@ -35,10 +37,8 @@ export default {
   },
   methods: {
     login() {
-      fetch('/api/login', {
-        method: 'POST',
+      axios.post('login', {
         headers: {
-          'Access-Control-Allow-Origin': '*',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
