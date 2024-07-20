@@ -1,330 +1,189 @@
 <template>
-    <div class="wrapper fadeInDown">
-  <div id="formContent">
-    <!-- Tabs Titles -->
-
-    <!-- Icon -->
-    <div class="fadeIn first">
-      <!--img src="http://danielzawadzki.com/codepen/01/icon.svg" id="icon" alt="User Icon" /-->
+  <div class="login-container">
+    <div class="login-form">
+      <h2>Login</h2>
+      <div class="input-container">
+        <input type="text" v-model="email" id="email" class="input-field" name="email" placeholder="Correo electrónico">
+      </div>
+      <div class="input-container2">
+        <input type="password" v-model="password" id="password" class="input-field" name="password" placeholder="Contraseña">
+      </div>
+      <button class="login-button" @click="submitFrom">Iniciar sesión</button>
+      <p v-if="error" class="error-message">{{ error }}</p>
+      <div class="forgot-password">
+        <a href="#" class="forgot-link">¿Olvidaste la contraseña?</a>
+      </div>
     </div>
-
-    <!-- Login Form -->
-    <!-- <form> -->
-      <input type="text" v-model="email" id="email" class="fadeIn second" name="email" placeholder="email">
-      <input type="text" v-model="password" id="password" class="fadeIn third" name="password" placeholder="password">
-      <button  class="fadeIn fourth" @click="login"> Inicio session</button>
-    <!-- </form> -->
-    <p v-if="error">{{ error }}</p>
-
-    <!-- Remind Passowrd -->
-    <div id="formFooter">
-      <a class="underlineHover" href="#">Olvidaste la contraseña?</a>
-    </div>
-
   </div>
-</div>
 </template>
 
 <script>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { sessionService } from '../services/sessionService';
+import { useToast } from 'vue-toastification';
+
 export default {
-  data() {
-    return {
-      email: '',
-      password: ''
-    };
-  },
-  methods: {
-    login() {
-      fetch('/api/login', {
-        method: 'POST',
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: this.email,
-          password: this.password
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.access_token) {
-          localStorage.setItem('token', data.access_token); // Guardar token en localStorage
-          this.$router.push('/home'); // Redirigir a la vista Home
+  setup() {
+    const email = ref('');
+    const password = ref('');
+    const router = useRouter();
+    const toast = useToast();
+
+    const submitFrom = async () => {
+      const user = {
+        email: email.value,
+        password: password.value
+      };
+
+      try {
+        const response = await sessionService.getSession(user);
+
+        if (response.data) {
+          const { ID, token } = response.data;
+          localStorage.setItem('ID', ID);
+          localStorage.setItem('token', token);
+
+          toast.success('Inicio de sesión exitoso!', {
+            timeout: 3000
+          });
+          setTimeout(() => {
+            router.push('/api/admins');
+          }, 3000);
         } else {
-          console.error('Error al iniciar sesión:', data);
+          toast.error('Fallo al iniciar sesión.', {
+            timeout: 5000
+          });
         }
-      })
-      .catch(error => {
-        console.error('Error al iniciar sesión:', error);
-      });
-    }
+
+      } catch (error) {
+        toast.error('Ocurrió un error durante el inicio de sesión.', {
+          timeout: 5000
+        });
+      }
+    };
+
+    return {
+      email,
+      password,
+      submitFrom
+    };
   }
-}
+};
 </script>
 
 
+
+
 <style scoped>
-
-/* BASIC */
-
-html {
-  background-color: #56baed;
+body {
+  background-color: #1F1F1F;
+  color: #E5D5A5;
+  font-family: Arial, sans-serif;
 }
 
-body {
-  font-family: "Poppins", sans-serif;
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100vh;
 }
 
-a {
-  color: #92badd;
-  display:inline-block;
-  text-decoration: none;
-  font-weight: 400;
-}
-
-h2 {
-  text-align: center;
-  font-size: 16px;
-  font-weight: 600;
-  text-transform: uppercase;
-  display:inline-block;
-  margin: 40px 8px 10px 8px; 
-  color: #cccccc;
-}
-
-
-
-/* STRUCTURE */
-
-.wrapper {
+.login-form {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  flex-direction: column; 
-  justify-content: center;
-  width: 50%;       /*posicion del login */
-  min-height: 100%;
-  padding: 50px;
-}
-
-#formContent {
-  -webkit-border-radius: 10px 10px 10px 10px;
-  border-radius: 10px 10px 10px 10px;
-  background: #fff;
-  padding: 30px;
+  background-color: #121212;
+  padding: 40px;
+  border-radius: 80px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 90%;
-  max-width: 450px;
+  max-width: 200px;
+  height: 85vh;
+}
+
+.welcome-text {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #E5D5A5;
+}
+
+.icon-container {
+  margin-bottom: 20px;
+}
+
+.icon {
+  font-size: 40px;
+  background-color: #ccc;
+  border-radius: 50%;
+  padding: 10px;
+}
+
+.input-container {
+  width: 110%;
+  margin-bottom: 15px;
   position: relative;
-  padding: 30px;
-  -webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
-  box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
-  text-align: center;
+  margin-bottom: 10px;
+  height: 10vh;
+  margin-top: 80px;
 }
 
-#formFooter {
-  background-color: #f6f6f6;
-  border-top: 1px solid #dce8f1;
-  padding: 25px;
-  text-align: center;
-  -webkit-border-radius: 0 0 10px 10px;
-  border-radius: 0 0 10px 10px;
+.input-container2 {
+  width: 110%;
+  margin-bottom: 15px;
+  position: center;
+  margin-bottom: 80px;
 }
 
-
-
-/* TABS */
-
-h2.inactive {
-  color: #cccccc;
-}
-
-h2.active {
-  color: #0d0d0d;
-  border-bottom: 2px solid #5fbae9;
-}
-
-
-
-/* FORM TYPOGRAPHY*/
-
-input[type=button], input[type=submit], input[type=reset]  {
-  background-color: #56baed;
-  border: none;
-  color: white;
-  padding: 15px 80px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  text-transform: uppercase;
-  font-size: 13px;
-  -webkit-box-shadow: 0 10px 30px 0 rgba(95,186,233,0.4);
-  box-shadow: 0 10px 30px 0 rgba(95,186,233,0.4);
-  -webkit-border-radius: 5px 5px 5px 5px;
-  border-radius: 5px 5px 5px 5px;
-  margin: 5px 20px 40px 20px;
-  -webkit-transition: all 0.3s ease-in-out;
-  -moz-transition: all 0.3s ease-in-out;
-  -ms-transition: all 0.3s ease-in-out;
-  -o-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
-}
-
-input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover  {
-  background-color: #39ace7;
-}
-
-input[type=button]:active, input[type=submit]:active, input[type=reset]:active  {
-  -moz-transform: scale(0.95);
-  -webkit-transform: scale(0.95);
-  -o-transform: scale(0.95);
-  -ms-transform: scale(0.95);
-  transform: scale(0.95);
-}
-
-input[type=text] {
-  background-color: #f6f6f6;
-  border: none;
-  color: #0d0d0d;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 5px;
-  width: 85%;
-  border: 2px solid #f6f6f6;
-  -webkit-transition: all 0.5s ease-in-out;
-  -moz-transition: all 0.5s ease-in-out;
-  -ms-transition: all 0.5s ease-in-out;
-  -o-transition: all 0.5s ease-in-out;
-  transition: all 0.5s ease-in-out;
-  -webkit-border-radius: 5px 5px 5px 5px;
-  border-radius: 5px 5px 5px 5px;
-}
-
-input[type=text]:focus {
-  background-color: #fff;
-  border-bottom: 2px solid #5fbae9;
-}
-
-input[type=text]:placeholder {
-  color: #cccccc;
-}
-
-
-
-/* ANIMATIONS */
-
-/* Simple CSS3 Fade-in-down Animation */
-.fadeInDown {
-  -webkit-animation-name: fadeInDown;
-  animation-name: fadeInDown;
-  -webkit-animation-duration: 1s;
-  animation-duration: 1s;
-  -webkit-animation-fill-mode: both;
-  animation-fill-mode: both;
-}
-
-@-webkit-keyframes fadeInDown {
-  0% {
-    opacity: 0;
-    -webkit-transform: translate3d(0, -100%, 0);
-    transform: translate3d(0, -100%, 0);
-  }
-  100% {
-    opacity: 1;
-    -webkit-transform: none;
-    transform: none;
-  }
-}
-
-@keyframes fadeInDown {
-  0% {
-    opacity: 0;
-    -webkit-transform: translate3d(0, -100%, 0);
-    transform: translate3d(0, -100%, 0);
-  }
-  100% {
-    opacity: 1;
-    -webkit-transform: none;
-    transform: none;
-  }
-}
-
-/* Simple CSS3 Fade-in Animation */
-@-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-@-moz-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-
-.fadeIn {
-  opacity:0;
-  -webkit-animation:fadeIn ease-in 1;
-  -moz-animation:fadeIn ease-in 1;
-  animation:fadeIn ease-in 1;
-
-  -webkit-animation-fill-mode:forwards;
-  -moz-animation-fill-mode:forwards;
-  animation-fill-mode:forwards;
-
-  -webkit-animation-duration:1s;
-  -moz-animation-duration:1s;
-  animation-duration:1s;
-}
-
-.fadeIn.first {
-  -webkit-animation-delay: 0.4s;
-  -moz-animation-delay: 0.4s;
-  animation-delay: 0.4s;
-}
-
-.fadeIn.second {
-  -webkit-animation-delay: 0.6s;
-  -moz-animation-delay: 0.6s;
-  animation-delay: 0.6s;
-}
-
-.fadeIn.third {
-  -webkit-animation-delay: 0.8s;
-  -moz-animation-delay: 0.8s;
-  animation-delay: 0.8s;
-}
-
-.fadeIn.fourth {
-  -webkit-animation-delay: 1s;
-  -moz-animation-delay: 1s;
-  animation-delay: 1s;
-}
-
-/* Simple CSS3 Fade-in Animation */
-.underlineHover:after {
-  display: block;
-  left: 0;
-  bottom: -10px;
-  width: 0;
-  height: 2px;
-  background-color: #56baed;
-  content: "";
-  transition: width 0.2s;
-}
-
-.underlineHover:hover {
-  color: #0d0d0d;
-}
-
-.underlineHover:hover:after{
+.input-field {
   width: 100%;
+  padding: 10px;
+  border: 1px solid #404040;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: #1F1F1F;
+  color: #E5D5A5;
 }
 
+.password-icon {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+  color: #E5D5A5;
+}
 
+.login-button {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(90deg, #00BFFF 0%, #8A2BE2 100%);
+  color: white;
+  border: none;
+  border-radius: 15px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
 
-/* OTHERS */
+.login-button:hover {
+  opacity: 0.8;
+}
 
-*:focus {
-    outline: none;
-} 
+.error-message {
+  color: red;
+  margin-bottom: 10px;
+}
 
-#icon {
-  width:60%;
+.forgot-password {
+  text-align: center;
+}
+
+.forgot-link {
+  color: #E5D5A5;
+  text-decoration: none;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
 }
 </style>

@@ -1,19 +1,22 @@
 <template>
-  <div class="container">
-    <h1>Administradores</h1>
-    <div class="buttons">
-      <button @click="navigateTo('/serviciosPrestadores')">Ver prestadores de servicios públicos</button>
-      <button @click="navigateTo('/clientes')">Clientes de servicios públicos</button>
+  <div class="invoice-container">
+    <div class="invoice-header">
+      <h2>Area de Administrador</h2>
+    </div>
+    <div class="invoice-buttons">
+      <button class="btn">+ Nuevo Admin</button>
+      <button class="button-nuevoPrestadorSP" @click="companyForm">+ Nuevo Prestador de Servicio Publico</button>
     </div>
     <table>
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Apellido</th>
+          <th>NIT</th>
+          <th>Nombre de la Empresa</th>
+          <th>Localidad</th>
+          <th>Direccion</th>
+          <th>Codigo postal</th>
           <th>Email</th>
-          <th>Password</th>
-          <th>Tipo de Usuario</th>
+          <th>Perfil</th>
         </tr>
       </thead>
       <tbody>
@@ -22,7 +25,6 @@
           <td>{{ admin.nombre }}</td>
           <td>{{ admin.apellido }}</td>
           <td>{{ admin.email }}</td>
-          <td>{{ admin.password }}</td>
           <td>{{ admin.tipouser }}</td>
         </tr>
       </tbody>
@@ -31,7 +33,7 @@
 </template>
 
 <script>
-import axios from '../api/axios';
+import axios from 'axios';
 
 export default {
   data() {
@@ -45,24 +47,58 @@ export default {
   methods: {
     async fetchAdmins() {
       try {
-        const response = await axios.get('/admins', {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('/api/admins', {
           headers: {
-            "authorization": localStorage.getItem("token")
+            Authorization: `Bearer ${token}`
           }
         });
         this.admins = response.data;
       } catch (error) {
         console.error('Error fetching admins:', error);
-      }
+      }      
     },
-    navigateTo(route) {
-      this.$router.push(route);
+    companyForm() {
+      // Redireccionar a la página de registro de empresa
+      this.$router.push('/api/register');
     }
   }
 };
 </script>
 
 <style>
+
+.invoice-container {
+  background-color: #f9f9f9;
+  padding: 20px;
+}
+
+.invoice-header {
+  background-color: #b4d8f1;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.invoice-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.btn {
+  padding: 10px 15px;
+  border: none;
+  background-color: #3498db;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #2980b9;
+}
+
 .container {
   display: flex;
   flex-direction: column;
@@ -101,4 +137,3 @@ th {
   background-color: #f2f2f2;
 }
 </style>
-

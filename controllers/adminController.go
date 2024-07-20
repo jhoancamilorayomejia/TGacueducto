@@ -14,7 +14,6 @@ type Admin struct {
 	Nombre   string `json:"nombre"`
 	Apellido string `json:"apellido"`
 	Email    string `json:"email"`
-	Password string `json:"password"`
 	Tipouser string `json:"tipouser"`
 }
 
@@ -22,7 +21,7 @@ type Admin struct {
 func GetAdmins(c *gin.Context) {
 	var admins []Admin
 
-	rows, err := db.DB.Query("SELECT idadmin, nombre, apellido, email, password, tipouser FROM admin")
+	rows, err := db.DB.Query("SELECT idadmin, nombre, apellido, email, tipouser FROM admin")
 	if err != nil {
 		log.Printf("Error querying admin table: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying admin table"})
@@ -32,7 +31,7 @@ func GetAdmins(c *gin.Context) {
 
 	for rows.Next() {
 		var admin Admin
-		err := rows.Scan(&admin.IDadmin, &admin.Nombre, &admin.Apellido, &admin.Email, &admin.Password, &admin.Tipouser)
+		err := rows.Scan(&admin.IDadmin, &admin.Nombre, &admin.Apellido, &admin.Email, &admin.Tipouser)
 		if err != nil {
 			log.Printf("Error scanning admin row: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error scanning admin row"})

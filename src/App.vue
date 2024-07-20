@@ -1,28 +1,16 @@
 <template>
   <div id="app">
-    <TableView />
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import TableView from './components/TableView.vue';
-
 export default {
-  name: 'App',
-  components: {
-    TableView
-  }
+  name: 'App'
 };
 </script>
 
-
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+/* Añade aquí tus estilos globales si es necesario */
 </style>
+
