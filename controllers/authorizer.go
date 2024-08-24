@@ -22,66 +22,78 @@ func Login(c *gin.Context) {
 
 	auth, err := models.Parser[models.Auth](body)
 	if err != nil {
-		log.Printf("Error parssing body: %v", err)
+		log.Printf("Error parsing body: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
 		return
 	}
 
-	admin, err := storage.GetAdminByEmail(auth.Email)
-	if err != nil {
-		log.Printf("Error getting secret key: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+	var apiKey *storage.APIKey
+	var apiKeyResponse *storage.APIKeyResponse
+	var userType string
+
+	switch auth.UserType {
+	case "admin":
+		admin, err := storage.GetAdminByEmail(auth.Email)
+		if err != nil {
+			log.Printf("Error getting admin: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+			return
+		}
+
+		err = security.VerifyPassword(admin.Password, auth.Password)
+		if err != nil {
+			log.Printf("Error verifying password: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid credentials"})
+			return
+		}
+
+		apiKey, err = storage.NewAPIKey(admin, "", auth.Email)
+		if err != nil {
+			log.Printf("Error creating api key: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+			return
+		}
+
+		userType = "admin"
+
+	case "company":
+		company, err := storage.GetCompanyByEmail(auth.Email)
+		if err != nil {
+			log.Printf("Error getting company: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+			return
+		}
+
+		err = security.VerifyPassword(company.Password, auth.Password)
+		if err != nil {
+			log.Printf("Error verifying password: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid credentials"})
+			return
+		}
+
+		apiKey, err = storage.NewCompanyAPIKey(company, "", auth.Email)
+		if err != nil {
+			log.Printf("Error creating api key: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+			return
+		}
+
+		userType = "company"
+	default:
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user type"})
 		return
 	}
 
-	err = security.VerifyPassword(admin.Password, auth.Password)
+	apiKeyResponse, err = apiKey.GenerateAPIKey(c)
 	if err != nil {
-		log.Printf("Error verifying password: %v", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid credentials"})
-		return
-	}
-
-	apiKey, err := storage.NewAPIKey(admin, "", auth.Email)
-	if err != nil {
-		log.Printf("Error creating api key: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
-		return
-	}
-
-	apiKeyResponse, err := apiKey.GenerateAPIKey(c)
-	if err != nil {
-		log.Printf("Error generatting api key: %v", err)
+		log.Printf("Error generating api key: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"access_token": apiKeyResponse.AccessToken,
+		"userType":     userType,
 		"message":      "user logged successfully",
 	})
-}
-
-func CheckAuth(c *gin.Context) {
-	authHeader := c.GetHeader("Authorization")
-
-	if authHeader == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing"})
-		c.AbortWithStatus(http.StatusUnauthorized)
-		return
-	}
-
-	_, err := storage.VerifyAPIKey(c, authHeader)
-	if err != nil && storage.ErrNoHMACSigningMethod.Error() == err.Error() {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unexpected api algorithm received"})
-		c.AbortWithStatus(http.StatusUnauthorized)
-		return
-	}
-
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "User unauthorized"})
-		c.AbortWithStatus(http.StatusUnauthorized)
-		return
-	}
-
-	c.Next()
 }

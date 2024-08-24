@@ -1,8 +1,10 @@
+// src/services/sessionService.js
 import axios from 'axios';
 
+const getSession = async (user) => {
+  return axios.post('/api/login', user);
+};
+
 export const sessionService = {
-  async getSession(user) {
-    const url = '/api/login';
-    return await axios.post(url, user);
-  }
+  getSession
 };

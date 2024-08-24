@@ -8,6 +8,12 @@
       <div class="input-container2">
         <input type="password" v-model="password" id="password" class="input-field" name="password" placeholder="Contraseña">
       </div>
+      <div class="input-container2">
+        <select v-model="userType" id="userType" class="input-field" name="userType">
+          <option value="admin">Soy Administrador</option>
+          <option value="company">Prestador de Servicio publico</option>
+        </select>
+      </div>
       <button class="login-button" @click="submitFrom">Iniciar sesión</button>
       <p v-if="error" class="error-message">{{ error }}</p>
       <div class="forgot-password">
@@ -27,13 +33,15 @@ export default {
   setup() {
     const email = ref('');
     const password = ref('');
+    const userType = ref('admin'); // Default to admin
     const router = useRouter();
     const toast = useToast();
 
     const submitFrom = async () => {
       const user = {
         email: email.value,
-        password: password.value
+        password: password.value,
+        userType: userType.value
       };
 
       try {
@@ -66,6 +74,7 @@ export default {
     return {
       email,
       password,
+      userType,
       submitFrom
     };
   }

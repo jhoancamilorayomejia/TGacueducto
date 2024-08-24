@@ -4,8 +4,8 @@
       <h2>Area de Administrador</h2>
     </div>
     <div class="invoice-buttons">
-      <button class="btn">+ Nuevo Admin</button>
-      <button class="button-nuevoPrestadorSP" @click="companyForm">+ Nuevo Prestador de Servicio Publico</button>
+      <button class="button-registerPrestadorSP" @click="Allcompany">Ver Registro de Prestadores de Servicio Publico</button>
+      <button class="button-nuevoPrestadorSP" @click="companyForm">Registrar Empresa de Acueducto</button>
     </div>
     <table>
       <thead>
@@ -59,10 +59,15 @@ export default {
     companyForm() {
       // Redireccionar a la página de registro de empresa
       this.$router.push('/api/register');
+    },
+    Allcompany() {
+      //Redireccionar a la pagina de empresas registradas
+      this.$router.push('/api/AllCompany');
     }
   }
 };
 </script>
+
 
 <style>
 

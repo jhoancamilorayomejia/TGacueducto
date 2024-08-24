@@ -1,6 +1,6 @@
 package models
 
-// Admin representa la estructura de la tabla admin en la base de datos
+// Admin representa la estructura de la tabla company en la base de datos
 type Admin struct {
 	IDadmin   int    `json:"idadmin"`
 	Nombre    string `json:"nombre"`

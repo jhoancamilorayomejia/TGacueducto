@@ -5,6 +5,7 @@ import (
 	"github.com/jhoancamilorayomejia/TGacueducto/models"
 )
 
+// para company tendria que crear otra funcion de aqui.
 // GetAdminByEmail
 func GetAdminByEmail(email string) (*models.Admin, error) {
 	rows, err := db.DB.Query(`SELECT idadmin, password, secret_key FROM admin WHERE email = $1`, email)

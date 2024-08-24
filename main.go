@@ -9,6 +9,7 @@ import (
 
 	"github.com/jhoancamilorayomejia/TGacueducto/controllers"
 	"github.com/jhoancamilorayomejia/TGacueducto/db"
+	//"github.com/jhoancamilorayomejia/TGacueducto/models"
 )
 
 func main() {
@@ -34,6 +35,8 @@ func main() {
 
 	//r.GET("/api/admins", controllers.CheckAuth, controllers.GetAdmins)
 	r.GET("/api/admins", controllers.GetAdmins)
+	r.GET("/api/AllCompany", controllers.GetCompanies) // Ruta mostrar tabla de empresas
+
 	r.POST("/api/login", controllers.Login)
 	//r.GET("/api/servidoresPublicos", controllers.GetservidoresPublicos)
 	err = r.Run(":8081")

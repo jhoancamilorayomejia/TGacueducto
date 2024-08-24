@@ -1,10 +1,9 @@
 <template>
   <div class="invoice-container">
     <div class="invoice-header">
-      <h2>Area de Administrador</h2>
+      <h2>Area de Administrador / Empresas</h2>
     </div>
     <div class="invoice-buttons">
-      <button class="btn">+ Nuevo Admin</button>
       <button class="button-nuevoPrestadorSP" @click="companyForm">+ Nuevo Prestador de Servicio Publico</button>
     </div>
     <table>
@@ -13,19 +12,18 @@
           <th>NIT</th>
           <th>Nombre de la Empresa</th>
           <th>Localidad</th>
-          <th>Direccion</th>
-          <th>Codigo postal</th>
+          <th>Teléfono</th>
           <th>Email</th>
-          <th>Perfil</th>
+          <th>Datos</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="admin in admins" :key="admin.idadmin">
-          <td>{{ admin.idadmin }}</td>
-          <td>{{ admin.nombre }}</td>
-          <td>{{ admin.apellido }}</td>
-          <td>{{ admin.email }}</td>
-          <td>{{ admin.tipouser }}</td>
+        <tr v-for="company in companies" :key="company.IDcompany">
+          <td>{{ company.nit }}</td>
+          <td>{{ company.Name }}</td>
+          <td>{{ company.address }}</td>
+          <td>{{ company.Phone }}</td>
+          <td>{{ company.Email }}</td>
         </tr>
       </tbody>
     </table>
@@ -38,24 +36,25 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      admins: []
+      companies: []
     };
   },
   created() {
-    this.fetchAdmins();
+    this.fetchCompanies();
   },
   methods: {
-    async fetchAdmins() {
+    async fetchCompanies() {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('/api/admins', {
+        const response = await axios.get('/api/AllCompany', {  // Ruta corregida
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
-        this.admins = response.data;
+        console.log(response.data); // Para verificar los datos recibidos
+        this.companies = response.data;
       } catch (error) {
-        console.error('Error fetching admins:', error);
+        console.error('Error fetching companies:', error);
       }      
     },
     companyForm() {
@@ -65,6 +64,8 @@ export default {
   }
 };
 </script>
+
+
 
 <style>
 
