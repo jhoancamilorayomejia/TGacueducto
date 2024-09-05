@@ -151,7 +151,7 @@ body {
 }
 
 .input-container2 {
-  width: 70%;
+  width: 50%;
   margin-bottom: 15px;
 }
 

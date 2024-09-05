@@ -10,7 +10,7 @@
       <thead>
         <tr>
           <th>NIT</th>
-          <th>Nombre de la Empresa</th>
+          <th>Nombre de la Entidad</th>
           <th>Localidad</th>
           <th>Teléfono</th>
           <th>Email</th>
