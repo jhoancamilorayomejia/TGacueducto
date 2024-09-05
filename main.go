@@ -36,6 +36,7 @@ func main() {
 	//r.GET("/api/admins", controllers.CheckAuth, controllers.GetAdmins)
 	r.GET("/api/admins", controllers.GetAdmins)
 	r.GET("/api/AllCompany", controllers.GetCompanies) // Ruta mostrar tabla de empresas
+	r.GET("/api/customer", controllers.GetUsuarios)    // Ruta mostrar tabla de clientes/usuarios
 
 	r.POST("/api/login", controllers.Login)
 	//r.GET("/api/servidoresPublicos", controllers.GetservidoresPublicos)

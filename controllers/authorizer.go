@@ -11,7 +11,7 @@ import (
 	"github.com/jhoancamilorayomejia/TGacueducto/storage"
 )
 
-// Login
+// Funcion Login
 func Login(c *gin.Context) {
 	body, err := io.ReadAll(c.Request.Body)
 	if err != nil {

@@ -3,15 +3,34 @@
     <div class="login-form">
       <h2>Login</h2>
       <div class="input-container">
-        <input type="text" v-model="email" id="email" class="input-field" name="email" placeholder="Correo electrónico">
+        <input
+          type="text"
+          v-model="email"
+          id="email"
+          class="input-field"
+          name="email"
+          placeholder="Correo electrónico"
+        />
+      </div>
+      <div class="input-container">
+        <input
+          type="password"
+          v-model="password"
+          id="password"
+          class="input-field"
+          name="password"
+          placeholder="Contraseña"
+        />
       </div>
       <div class="input-container2">
-        <input type="password" v-model="password" id="password" class="input-field" name="password" placeholder="Contraseña">
-      </div>
-      <div class="input-container2">
-        <select v-model="userType" id="userType" class="input-field" name="userType">
+        <select
+          v-model="userType"
+          id="userType"
+          class="input-field"
+          name="userType">
           <option value="admin">Soy Administrador</option>
-          <option value="company">Prestador de Servicio publico</option>
+          <option value="company">Soy Compañia</option>
+          <option value="client">Soy usuario</option>
         </select>
       </div>
       <button class="login-button" @click="submitFrom">Iniciar sesión</button>
@@ -55,8 +74,16 @@ export default {
           toast.success('Inicio de sesión exitoso!', {
             timeout: 3000
           });
+
+          // Redirigir basado en el tipo de usuario
           setTimeout(() => {
-            router.push('/api/admins');
+            if (userType.value === 'admin') {
+              router.push('/api/admins');
+            } else if (userType.value === 'company') {
+              router.push('/api/company'); // Ajusta esta ruta según sea necesario
+            } else if (userType.value === 'client') {
+              router.push('/api/client'); // Ajusta esta ruta según sea necesario
+            }
           }, 3000);
         } else {
           toast.error('Fallo al iniciar sesión.', {
@@ -86,92 +113,67 @@ export default {
 
 <style scoped>
 body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
   background-color: #1F1F1F;
   color: #E5D5A5;
-  font-family: Arial, sans-serif;
 }
 
 .login-container {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start; /* Alinea el formulario hacia la izquierda */
   align-items: center;
-  height: 100vh;
+  height: 97.5vh;
+  background-image: url('https://agua.org.mx/wp-content/uploads/2020/06/ingeniero-t%C3%A9cnico-tomando-muestra-de-agua-an%C3%A1lisis-1140x600-1.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding-left: 50px; /* Añade un margen izquierdo para separarlo del borde */
 }
 
 .login-form {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #121212;
+  background: linear-gradient(90deg, #00BFFF  0%, #000000 100%); /* Fondo negro semitransparente */
   padding: 40px;
-  border-radius: 80px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 90%;
-  max-width: 200px;
-  height: 85vh;
-}
-
-.welcome-text {
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: #E5D5A5;
-}
-
-.icon-container {
-  margin-bottom: 20px;
-}
-
-.icon {
-  font-size: 40px;
-  background-color: #ccc;
-  border-radius: 50%;
-  padding: 10px;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px; /* Ajusta el tamaño del formulario */
+  z-index: 1; /* Asegura que esté por encima de la imagen */
 }
 
 .input-container {
-  width: 110%;
+  width: 100%;
   margin-bottom: 15px;
-  position: relative;
-  margin-bottom: 10px;
-  height: 10vh;
-  margin-top: 80px;
 }
 
 .input-container2 {
-  width: 110%;
+  width: 70%;
   margin-bottom: 15px;
-  position: center;
-  margin-bottom: 80px;
 }
 
 .input-field {
   width: 100%;
   padding: 10px;
-  border: 1px solid #404040;
+  border: 1px solid #00BFFF;
   border-radius: 5px;
   font-size: 16px;
   background-color: #1F1F1F;
   color: #E5D5A5;
 }
 
-.password-icon {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  cursor: pointer;
-  color: #E5D5A5;
-}
-
 .login-button {
   width: 100%;
   padding: 10px;
-  background: linear-gradient(90deg, #00BFFF 0%, #8A2BE2 100%);
+  background: linear-gradient(90deg, #000000 0%, #d68203 100%);
   color: white;
   border: none;
   border-radius: 15px;
   font-size: 16px;
   cursor: pointer;
-  margin-bottom: 10px;
 }
 
 .login-button:hover {
@@ -194,5 +196,17 @@ body {
 
 .forgot-link:hover {
   text-decoration: underline;
+}
+
+/* Añadir un degradado semitransparente sobre la imagen de fondo */
+.login-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* Degradado oscuro */
+  z-index: 0;
 }
 </style>

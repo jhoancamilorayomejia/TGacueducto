@@ -1,16 +1,16 @@
 <template>
   <div class="invoice-container">
     <div class="invoice-header">
-      <h2>Area de Administrador / Empresas</h2>
+      <h2>Area de Gestion de Empresas</h2>
     </div>
     <div class="invoice-buttons">
-      <button class="button-nuevoPrestadorSP" @click="companyForm">+ Nuevo Prestador de Servicio Publico</button>
+      <button class="button-nuevoPrestadorSP" @click="UsuarioForm">+ Nuevo Cliente</button>
     </div>
     <table>
       <thead>
         <tr>
-          <th>NIT</th>
-          <th>Nombre de la Empresa</th>
+          <th>Nombre del Titular</th>
+          <th>Apellidos</th>
           <th>Localidad</th>
           <th>Teléfono</th>
           <th>Email</th>
@@ -18,12 +18,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="company in companies" :key="company.IDcompany">
-          <td>{{ company.nit }}</td>
-          <td>{{ company.Name }}</td>
-          <td>{{ company.address }}</td>
-          <td>{{ company.Phone }}</td>
-          <td>{{ company.Email }}</td>
+        <tr v-for="usuario in usuarios" :key="usuario.IDusuario">
+          <td>{{ usuario. name }}</td>
+          <td>{{ usuario.last_name }}</td>
+          <td>{{ usuario.address }}</td>
+          <td>{{ usuario.Phone }}</td>
+          <td>{{ usuario.Email }}</td>
         </tr>
       </tbody>
     </table>
@@ -36,37 +36,36 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      companies: []
+      usuarios: []
     };
   },
   created() {
-    this.fetchCompanies();
+    this.fetchUsuarios();
   },
   methods: {
-    async fetchCompanies() {
+    async fetchUsuarios() {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('/api/AllCompany', {  // Ruta corregida
+        const response = await axios.get('/api/customer', {  // Ruta corregida
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
         console.log(response.data); // Para verificar los datos recibidos
-        this.companies = response.data;
+        this.usuarios = response.data;
       } catch (error) {
-        console.error('Error fetching companies:', error);
+        console.error('Error fetching usuarios:', error);
       }      
     },
-    companyForm() {
+    UsuarioForm() {
       // Redireccionar a la página de registro de empresa
       this.$router.push('/api/register');
     }
   }
 };
 </script>
-
-
-
+  
+  
 <style scoped>
 body {
   background-color: #ffffff; /* Fondo sólido para toda la página */
@@ -132,3 +131,4 @@ th {
   background-color: #f2f2f2;
 }
 </style>
+  
