@@ -133,15 +133,4 @@ th {
   background-color: #f2f2f2;
 }
 
-/* Añadir un degradado semitransparente sobre la imagen de fondo */
-.invoice-container::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  /*background: rgba(0, 0, 0, 0.6); /* Degradado oscuro */
-  z-index: 0;
-}
 </style>
