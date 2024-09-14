@@ -1,7 +1,7 @@
 <template>
   <div class="invoice-container">
     <div class="invoice-header">
-      <h2>Area de Gestion de Empresas</h2>
+      <h2>Área de Gestión de Empresas</h2>
     </div>
     <div class="invoice-buttons">
       <button class="button-nuevoPrestadorSP" @click="UsuarioForm">+ Nuevo Cliente</button>
@@ -18,12 +18,15 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="usuario in usuarios" :key="usuario.IDusuario">
-          <td>{{ usuario. name }}</td>
+        <tr v-for="usuario in usuarios" :key="usuario.idcustomer">
+          <td>{{ usuario.name }}</td>
           <td>{{ usuario.last_name }}</td>
           <td>{{ usuario.address }}</td>
-          <td>{{ usuario.Phone }}</td>
-          <td>{{ usuario.Email }}</td>
+          <td>{{ usuario.phone }}</td>
+          <td>{{ usuario.email }}</td>
+          <td>
+            <button class="btn-edit" @click="editCustomer(usuario.idcustomer)">Modificar</button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -46,24 +49,45 @@ export default {
     async fetchUsuarios() {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('/api/customer', {  // Ruta corregida
+        const response = await axios.get('/api/customer', { 
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
-        console.log(response.data); // Para verificar los datos recibidos
         this.usuarios = response.data;
       } catch (error) {
         console.error('Error fetching usuarios:', error);
       }      
     },
     UsuarioForm() {
-      // Redireccionar a la página de registro de empresa
-      this.$router.push('/api/register');
+      // Redireccionar a la página de registro de cliente
+      this.$router.push('/api/registerCustomer');
+    },
+    async deleteCustomer(idcustomer, idcompany) {
+      const confirmDelete = confirm("¿Estás seguro de que deseas eliminar este cliente?");
+      if (confirmDelete) {
+        try {
+          const token = localStorage.getItem('token');
+          await axios.delete(`/api/customer/${idcustomer}/${idcompany}`, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          // Volver a obtener la lista de clientes después de eliminar
+          this.fetchUsuarios();
+        } catch (error) {
+          console.error('Error al eliminar cliente:', error);
+          alert('Hubo un error al intentar eliminar al cliente.');
+        }
+      }
+    },
+    editCustomer(idcustomer) {
+      this.$router.push(`/api/customer/edit/${idcustomer}`);
     }
   }
 };
 </script>
+
   
   
 <style scoped>
@@ -110,6 +134,7 @@ body {
   font-size: 12px;
 }
 
+
 .btn:hover {
   background-color: #2980b9;
 }
@@ -130,5 +155,7 @@ th, td {
 th {
   background-color: #f2f2f2;
 }
+
+
 </style>
   

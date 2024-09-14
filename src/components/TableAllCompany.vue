@@ -1,10 +1,10 @@
 <template>
   <div class="invoice-container">
     <div class="invoice-header">
-      <h2>Area de Administrador / Empresas</h2>
+      <h2>Área de Administrador / Empresas</h2>
     </div>
     <div class="invoice-buttons">
-      <button class="button-nuevoPrestadorSP" @click="companyForm">+ Nuevo Prestador de Servicio Publico</button>
+      <button class="button-nuevoPrestadorSP" @click="companyForm">+ Nuevo Prestador de Servicio Público</button>
     </div>
     <table>
       <thead>
@@ -14,7 +14,7 @@
           <th>Localidad</th>
           <th>Teléfono</th>
           <th>Email</th>
-          <th>Datos</th>
+          <th>Acciones</th> <!-- Nueva columna para las acciones -->
         </tr>
       </thead>
       <tbody>
@@ -24,6 +24,9 @@
           <td>{{ company.address }}</td>
           <td>{{ company.Phone }}</td>
           <td>{{ company.Email }}</td>
+          <td>
+            <button class="btn-edit" @click="editCompany(company.idcompany)">Modificar</button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -46,38 +49,37 @@ export default {
     async fetchCompanies() {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('/api/AllCompany', {  // Ruta corregida
+        const response = await axios.get('/api/AllCompany', {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
-        console.log(response.data); // Para verificar los datos recibidos
         this.companies = response.data;
       } catch (error) {
         console.error('Error fetching companies:', error);
-      }      
+      }
     },
     companyForm() {
-      // Redireccionar a la página de registro de empresa
       this.$router.push('/api/register');
+    },
+    editCompany(idcompany) {
+      this.$router.push(`/api/company/edit/${idcompany}`);
     }
   }
 };
 </script>
 
-
-
 <style scoped>
 body {
-  background-color: #ffffff; /* Fondo sólido para toda la página */
+  background-color: #ffffff;
   margin: 0;
   padding: 0;
-  font-family: 'Roboto', sans-serif; /* Tipo de letra */
-  font-size: 11px; /* Tamaño de letra general */
+  font-family: 'Roboto', sans-serif;
+  font-size: 11px;
 }
 
 .invoice-container {
-  background-color: #f3f3f3; /*color de formulario */
+  background-color: #f3f3f3;
   padding: 20px;
   margin: 50px auto;
   width: 80%;
@@ -90,29 +92,28 @@ body {
   padding: 15px;
   border-radius: 5px;
   margin-bottom: 20px;
-  /* text-align: center; */
   font-size: 15px;
 }
 
 .invoice-buttons {
   display: flex;
-  /*justify-content: center; */
   gap: 10px;
   margin-bottom: 20px;
 }
 
-.btn {
-  padding: 10px 20px;
-  border: none;
-  background-color: #62b5ec;
+.button-nuevoPrestadorSP {
+  background-color: #007bff;
   color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 12px;
+  transition: background-color 0.3s ease;
 }
 
-.btn:hover {
-  background-color: #2980b9;
+.button-nuevoPrestadorSP:hover {
+  background-color: #0056b3;
 }
 
 table {
@@ -131,4 +132,30 @@ th, td {
 th {
   background-color: #f2f2f2;
 }
+
+.delete-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.delete-button:hover {
+  background-color: darkred;
+}
+
+.btn-edit {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .btn-edit:hover {
+    background-color: #218838;
+  }
 </style>

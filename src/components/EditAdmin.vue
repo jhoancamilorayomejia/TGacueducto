@@ -1,6 +1,3 @@
-1. Asegúrate de que TableView.vue Redirige Correctamente
-vue
-Copiar código
 <template>
   <div class="invoice-container">
     <div class="invoice-header">
@@ -18,19 +15,24 @@ Copiar código
           <th>Apellido</th>
           <th>Email</th>
           <th>Rol</th>
-          <th>Acción</th>
+          <th>Acción</th> <!-- Nueva columna para acciones -->
         </tr>
       </thead>
       <tbody>
         <tr v-for="admin in admins" :key="admin.idadmin">
           <td>{{ admin.idadmin }}</td>
-          <td>{{ admin.nombre }}</td>
-          <td>{{ admin.apellido }}</td>
-          <td>{{ admin.email }}</td>
+          <td>
+            <input v-model="admin.nombre" />
+          </td>
+          <td>
+            <input v-model="admin.apellido" />
+          </td>
+          <td>
+            <input v-model="admin.email" />
+          </td>
           <td>{{ admin.tipouser }}</td>
           <td>
-            <button class="btn-edit" @click="editAdmin(admin.idadmin)">Modificar</button>
-            <button @click="deleteAdmin(admin.idadmin)">Eliminar</button>
+            <button @click="updateAdmin(admin)" class="btn-edit">Guardar</button> <!-- Botón para guardar cambios -->
           </td>
         </tr>
       </tbody>
@@ -64,6 +66,20 @@ export default {
         console.error('Error fetching admins:', error);
       }
     },
+    async updateAdmin(admin) {
+      try {
+        const token = localStorage.getItem('token');
+        await axios.put(`/api/admins/${admin.idadmin}`, admin, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        alert('Administrador actualizado exitosamente.');
+      } catch (error) {
+        console.error('Error al actualizar administrador:', error);
+        alert('Hubo un error al intentar actualizar el administrador.');
+      }
+    },
     companyForm() {
       this.$router.push('/api/register');
     },
@@ -80,15 +96,12 @@ export default {
               Authorization: `Bearer ${token}`
             }
           });
-          this.fetchAdmins();
+          this.fetchAdmins(); // Volver a obtener la lista de admins después de eliminar
         } catch (error) {
           console.error('Error al eliminar administrador:', error);
           alert('Hubo un error al intentar eliminar al administrador.');
         }
       }
-    },
-    editAdmin(idadmin) {
-      this.$router.push(`/api/admin/edit/${idadmin}`);
     }
   }
 };
@@ -174,30 +187,18 @@ button:hover {
 }
 
 .btn-edit {
-  background-color: #3498db;
+  background-color: #28a745;
   color: white;
   padding: 5px 10px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  margin-right: 10px;
 }
 
 .btn-edit:hover {
-  background-color: #2980b9;
+  background-color: #218838;
 }
 
-.btn-delete {
-  background-color: #e74c3c;
-  color: white;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
 
-.btn-delete:hover {
-  background-color: #c0392b;
-}
 
 </style>

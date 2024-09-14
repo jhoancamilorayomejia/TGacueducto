@@ -18,7 +18,8 @@ const (
 )
 
 var (
-	ErrMissingCompanyID     = errors.New("missing company id")
+	ErrMissingCompanyID = errors.New("missing company id")
+	//ErrMissingCustomerID    = errors.New("missing customer id")
 	ErrMissingUsername      = errors.New("missing username")
 	ErrInvalidGrant         = errors.New("invalid grant")
 	ErrNoHMACSigningMethod  = errors.New("no signing method HMAC")
@@ -41,6 +42,7 @@ type APIKeyResponse struct {
 	AccessToken string `json:"access_token"`
 }
 
+// NewAPIKey is the APIKey constructor for admins
 func NewAPIKey(admin *models.Admin, userID string, username string) (*APIKey, error) {
 	if admin.IDadmin == 0 {
 		return nil, ErrMissingCompanyID
@@ -92,6 +94,32 @@ func NewCompanyAPIKey(company *models.Company, userID string, username string) (
 	return apiKey, nil
 }
 
+// NewCustomerAPIKey is the APIKey constructor for customers
+func NewCustomerAPIKey(customer *models.Customer, userID string, username string) (*APIKey, error) {
+	if customer.IDcustomer == 0 {
+		return nil, ErrMissingCompanyID
+	}
+
+	if username == "" {
+		return nil, ErrMissingUsername
+	}
+
+	id, err := uuid.NewV4()
+	if err != nil {
+		return nil, err
+	}
+
+	apiKey := &APIKey{
+		ID:         id.String(),
+		CompanyID:  customer.IDcustomer,
+		UserID:     userID,
+		Username:   username,
+		PrivateKey: customer.SecretKey,
+	}
+
+	return apiKey, nil
+}
+
 func (apiKey *APIKey) GenerateAPIKey(ctx context.Context) (*APIKeyResponse, error) {
 	atClaims := apiKey.getClaims()
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
@@ -110,13 +138,14 @@ func (apiKey *APIKey) getClaims() jwt.MapClaims {
 	now := time.Now()
 
 	return jwt.MapClaims{
-		"id":         apiKey.ID,
-		"company_id": strconv.Itoa(apiKey.CompanyID),
-		"user_id":    apiKey.UserID,
-		"username":   apiKey.Username,
-		"iat":        now.Unix(),
-		"exp":        now.Add(apiKEYMaxDuration).Unix(),
-		"iss":        tgaISS,
+		"id":          apiKey.ID,
+		"company_id":  strconv.Itoa(apiKey.CompanyID),
+		"customer_id": strconv.Itoa(apiKey.CompanyID),
+		"user_id":     apiKey.UserID,
+		"username":    apiKey.Username,
+		"iat":         now.Unix(),
+		"exp":         now.Add(apiKEYMaxDuration).Unix(),
+		"iss":         tgaISS,
 	}
 }
 
@@ -151,11 +180,16 @@ func VerifyAPIKey(ctx context.Context, tokenString string) (*jwt.Token, error) {
 			return "", ErrMissingUsername
 		}
 
+		// Try to get the admin, if not found, try the company, and if not found, try the customer
 		admin, err := GetAdminByID(clientID, username)
 		if err != nil {
 			company, err := GetCompanyByID(clientID, username)
 			if err != nil {
-				return "", err
+				customer, err := GetCustomerByID(clientID, username)
+				if err != nil {
+					return "", err
+				}
+				return []byte(customer.SecretKey), nil
 			}
 			return []byte(company.SecretKey), nil
 		}

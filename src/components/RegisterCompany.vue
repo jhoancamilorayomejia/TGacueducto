@@ -117,7 +117,7 @@
   };
   </script>
   
-  <style>
+  <style scoped>
   .register-company-container {
     display: flex;
     justify-content: space-between;

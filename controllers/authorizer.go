@@ -79,6 +79,31 @@ func Login(c *gin.Context) {
 		}
 
 		userType = "company"
+
+	case "customer":
+		customer, err := storage.GetCustomerByEmail(auth.Email)
+		if err != nil {
+			log.Printf("Error getting customer: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+			return
+		}
+
+		err = security.VerifyPassword(customer.Password, auth.Password)
+		if err != nil {
+			log.Printf("Error verifying password: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid credentials"})
+			return
+		}
+
+		apiKey, err = storage.NewCustomerAPIKey(customer, "", auth.Email)
+		if err != nil {
+			log.Printf("Error creating api key: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+			return
+		}
+
+		userType = "customer"
+
 	default:
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user type"})
 		return

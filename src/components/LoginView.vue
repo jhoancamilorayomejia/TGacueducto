@@ -28,9 +28,9 @@
           id="userType"
           class="input-field"
           name="userType">
-          <option value="admin">Soy Administrador</option>
-          <option value="company">Soy Compañia</option>
-          <option value="client">Soy usuario</option>
+          <option value="admin">Administrador</option>
+          <option value="company">Servicio Acueducto</option>
+          <option value="customer">Usuario/Cliente</option>
         </select>
       </div>
       <button class="login-button" @click="submitFrom">Iniciar sesión</button>
@@ -81,8 +81,8 @@ export default {
               router.push('/api/admins');
             } else if (userType.value === 'company') {
               router.push('/api/company'); // Ajusta esta ruta según sea necesario
-            } else if (userType.value === 'client') {
-              router.push('/api/client'); // Ajusta esta ruta según sea necesario
+            } else if (userType.value === 'customer') {
+              router.push('/api/customer'); // Ajusta esta ruta según sea necesario
             }
           }, 3000);
         } else {
