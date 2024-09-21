@@ -20,11 +20,16 @@ type Customer struct {
 	Password   string `json:"password"`
 }
 
-// GetUsuarios maneja la solicitud para obtener todos los registros de la tabla usuarios
+// GetUsuarios maneja la solicitud para obtener los registros de la tabla usuarios filtrados por idcompany
 func GetUsuarios(c *gin.Context) {
 	var usuarios []Customer
 
-	rows, err := db.DB.Query("SELECT idcustomer, idcompany, name, last_name, address, phone, email FROM customer")
+	// Obtén el idcompany del parámetro de consulta
+	idcompany := c.Query("idcompany")
+
+	// Prepara la consulta SQL
+	query := "SELECT idcustomer, idcompany, name, last_name, address, phone, email FROM customer WHERE idcompany = $1"
+	rows, err := db.DB.Query(query, idcompany)
 	if err != nil {
 		log.Printf("Error querying usuario table: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying usuario table"})
@@ -32,6 +37,7 @@ func GetUsuarios(c *gin.Context) {
 	}
 	defer rows.Close()
 
+	// Itera sobre los resultados de la consulta
 	for rows.Next() {
 		var usuario Customer
 		err := rows.Scan(&usuario.IDcustomer, &usuario.IDcompany, &usuario.Name, &usuario.LastName, &usuario.Localidad, &usuario.Phone, &usuario.Email)
@@ -90,30 +96,44 @@ func UpdateCustomer(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Customer updated successfully"})
 }
 
-// RegisterUsuario maneja la solicitud para registrar un nuevo usuario
-/* func RegisterUsuario(c *gin.Context) {
-	var user Customer
-
-	// Parsear el cuerpo de la solicitud
-	err := c.ShouldBindJSON(&user)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
-		return
-	}
-
-	// Insertar en la base de datos
-	query := `INSERT INTO customer(idcompany, name, last_name, address, phone, email, password)
-	          VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING idcustomer`
-
-	err = db.DB.QueryRow(query, user.IDcompany, user.Name, user.LastName, user.Localidad, user.Phone, user.Email, user.Password).Scan(&user.IDcustomer)
-
-	if err != nil {
-		log.Printf("Error inserting user: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating user"})
-		return
-	}
-
-	// Responder con el nuevo usuario creado
-	c.JSON(http.StatusOK, user)
+type Customer2 struct {
+	IDcustomer int    `json:"idcustomer"`
+	IDcompany  int    `json:"idcompany"`
+	Name       string `json:"name"`
+	LastName   string `json:"last_name"`
+	Localidad  string `json:"address"` // Localidad en lugar de address para consistencia con JSON
+	Phone      string `json:"phone"`
+	Email      string `json:"email"`
 }
-*/
+
+// GetAllUsuarios maneja la solicitud para obtener todos los registros de la tabla customer
+func GetAllUsuarios(c *gin.Context) {
+	var allusuarios []Customer2
+
+	rows, err := db.DB.Query("SELECT idcustomer, idcompany, name, last_name, address, phone, email FROM customer")
+	if err != nil {
+		log.Printf("Error querying customer table: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying customer table"})
+		return
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var usuario Customer2
+		err := rows.Scan(&usuario.IDcustomer, &usuario.IDcompany, &usuario.Name, &usuario.LastName, &usuario.Localidad, &usuario.Phone, &usuario.Email)
+		if err != nil {
+			log.Printf("Error scanning customer row: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error scanning customer row"})
+			return
+		}
+		allusuarios = append(allusuarios, usuario)
+	}
+
+	if err = rows.Err(); err != nil {
+		log.Printf("Error iterating over rows: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error iterating over rows"})
+		return
+	}
+
+	c.JSON(http.StatusOK, allusuarios)
+}

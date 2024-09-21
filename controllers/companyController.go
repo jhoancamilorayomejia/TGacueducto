@@ -127,3 +127,34 @@ func GetSwitch(c *gin.Context) {
 
 	c.JSON(http.StatusOK, userSwitches)
 }
+
+// DeleteCompany maneja la solicitud para eliminar una empresa por su ID
+func DeleteCompany(c *gin.Context) {
+	idcompany := c.Param("idcompany")
+
+	// Ejecutar la consulta SQL para eliminar el registro
+	_, err := db.DB.Exec("DELETE FROM company WHERE idcompany = $1", idcompany)
+	if err != nil {
+		log.Printf("Error deleting company: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "No se pudo eliminar la Entidad."})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Entidad eliminada exitosamente."})
+}
+
+// ensayo para Info company (desde admin)
+// Handler para obtener los detalles de una empresa por ID
+func GetCompanyByID(c *gin.Context) {
+	idcompany := c.Param("idcompany")
+	var company Company
+	err := db.DB.QueryRow("SELECT nit, name, address, phone, email FROM company WHERE idcompany = $1", idcompany).
+		Scan(&company.Nit, &company.Nombre, &company.Localidad, &company.Phone, &company.Email)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching company details"})
+		return
+	}
+
+	c.JSON(http.StatusOK, company)
+}

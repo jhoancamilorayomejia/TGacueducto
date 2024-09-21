@@ -14,7 +14,6 @@
           <th>Nombre</th>
           <th>Apellido</th>
           <th>Email</th>
-          <th>Rol</th>
           <th>Acción</th> <!-- Nueva columna para acciones -->
         </tr>
       </thead>
@@ -30,7 +29,6 @@
           <td>
             <input v-model="admin.email" />
           </td>
-          <td>{{ admin.tipouser }}</td>
           <td>
             <button @click="updateAdmin(admin)" class="btn-edit">Guardar</button> <!-- Botón para guardar cambios -->
           </td>

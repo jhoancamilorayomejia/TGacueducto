@@ -7,6 +7,7 @@ Copiar código
       <h2>Área de Administrador</h2>
     </div>
     <div class="invoice-buttons">
+      <button class="btn" @click="adminForm">Nuevo Admin</button>
       <button class="btn" @click="Allcompany">Ver Registro de Prestadores de Servicio Público</button>
       <button class="btn" @click="companyForm">Registrar Empresa de Acueducto</button>
     </div>
@@ -17,7 +18,6 @@ Copiar código
           <th>Nombre</th>
           <th>Apellido</th>
           <th>Email</th>
-          <th>Rol</th>
           <th>Acción</th>
         </tr>
       </thead>
@@ -27,7 +27,6 @@ Copiar código
           <td>{{ admin.nombre }}</td>
           <td>{{ admin.apellido }}</td>
           <td>{{ admin.email }}</td>
-          <td>{{ admin.tipouser }}</td>
           <td>
             <button class="btn-edit" @click="editAdmin(admin.idadmin)">Modificar</button>
             <button @click="deleteAdmin(admin.idadmin)">Eliminar</button>
@@ -63,6 +62,9 @@ export default {
       } catch (error) {
         console.error('Error fetching admins:', error);
       }
+    },
+    adminForm() {
+      this.$router.push('/api/registerAdmin');
     },
     companyForm() {
       this.$router.push('/api/register');

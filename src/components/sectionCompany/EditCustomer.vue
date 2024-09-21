@@ -59,7 +59,7 @@
       async fetchUsuarios() {
         try {
           const token = localStorage.getItem('token');
-          const response = await axios.get('/api/customer', {
+          const response = await axios.get('/api/allcustomer', {
             headers: {
               Authorization: `Bearer ${token}`
             }

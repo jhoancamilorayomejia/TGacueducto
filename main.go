@@ -40,18 +40,19 @@ func main() {
 	r.POST("/api/login", controllers.Login)
 
 	// Ruta de acciones para admin
+	r.POST("/api/register-user", controllers.CreateAdmin)
 	r.DELETE("/api/admins/:idadmin", controllers.DeleteAdmin)
 	r.PUT("/api/admins/:idadmin", controllers.UpdateAdmin)
+	r.GET("/api/company/:idcompany", controllers.GetCompanyByID) // Obtiene una empresa por ID
+	//r.GET("/api/customer/:idcompany", controllers.GetCustomersByCompany)
+
+	//Ruta de acciones para company
+	r.PUT("/api/companies/:idcompany", controllers.UpdateCompany)
+	r.DELETE("/api/companies/:idcompany", controllers.DeleteCompany)
+	r.GET("/api/allcustomer", controllers.GetAllUsuarios)
 
 	//Ruta de acciones para customer
 	r.PUT("/api/customer/:idcustomer", controllers.UpdateCustomer)
-
-	//Ruta de acciones para company
-	r.PUT("/api/companies/:id", controllers.UpdateCompany)
-
-	//r.DELETE("/api/companies/:id", controllers.DeleteCompany)
-
-	//r.DELETE("/api/customer/:id", controllers.DeleteCustomer)
 
 	err = r.Run(":8081")
 	if err != nil {

@@ -14,18 +14,25 @@
           <th>Localidad</th>
           <th>Teléfono</th>
           <th>Email</th>
-          <th>Acciones</th> <!-- Nueva columna para las acciones -->
+          <th>Información</th>
+          <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="company in companies" :key="company.IDcompany">
+        <tr v-for="company in companies" :key="company.idcompany">
           <td>{{ company.nit }}</td>
           <td>{{ company.Name }}</td>
           <td>{{ company.address }}</td>
           <td>{{ company.Phone }}</td>
           <td>{{ company.Email }}</td>
           <td>
+            <button class="btn-info" @click="viewCompanyInfo(company.idcompany, company.Name)">Ver Información</button>
+          </td>
+          <td>
+            <div class="button-group">
             <button class="btn-edit" @click="editCompany(company.idcompany)">Modificar</button>
+            <button class= "btn-delete" @click="deleteCompany(company.idcompany)">Eliminar</button>
+          </div>
           </td>
         </tr>
       </tbody>
@@ -62,22 +69,39 @@ export default {
     companyForm() {
       this.$router.push('/api/register');
     },
+    async deleteCompany(idcompany) {
+      const confirmDelete = confirm("¿Estás seguro de que deseas eliminar esta Entidad?");
+      if (confirmDelete) {
+        try {
+          const token = localStorage.getItem('token');
+          await axios.delete(`/api/companies/${idcompany}`, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          // Actualizar la lista de empresas en el frontend sin hacer otra solicitud
+      this.companies = this.companies.filter(company => company.idcompany !== idcompany);
+        } catch (error) {
+          console.error('Error al eliminar esta Entidad:', error);
+          alert('Hubo un error al intentar eliminar la entidad.');
+        }
+      }
+    },
     editCompany(idcompany) {
       this.$router.push(`/api/company/edit/${idcompany}`);
+    },
+    viewCompanyInfo(idcompany, name) {
+      this.$router.push({
+        path: `/api/company/info/${idcompany}`,
+        query: { name }
+      });
     }
   }
 };
 </script>
 
 <style scoped>
-body {
-  background-color: #ffffff;
-  margin: 0;
-  padding: 0;
-  font-family: 'Roboto', sans-serif;
-  font-size: 11px;
-}
-
+/* Estilos personalizados */
 .invoice-container {
   background-color: #f3f3f3;
   padding: 20px;
@@ -109,17 +133,11 @@ body {
   font-size: 14px;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.button-nuevoPrestadorSP:hover {
-  background-color: #0056b3;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin: 0 auto;
   font-size: 14px;
 }
 
@@ -129,12 +147,8 @@ th, td {
   text-align: center;
 }
 
-th {
-  background-color: #f2f2f2;
-}
-
-.delete-button {
-  background-color: red;
+.btn-info {
+  background-color: #d35400;
   color: white;
   border: none;
   padding: 5px 10px;
@@ -142,20 +156,38 @@ th {
   border-radius: 5px;
 }
 
-.delete-button:hover {
-  background-color: darkred;
+.btn-info:hover {
+  background-color: #d35400;
+}
+
+.button-group {
+  display: flex;
+  gap: 15px; /* Ajusta el espacio entre los botones aquí */
 }
 
 .btn-edit {
-    background-color: #3498db;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  
-  .btn-edit:hover {
-    background-color: #218838;
-  }
+  background-color: #2980b9;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.btn-delete {
+  background-color: #e74c3c;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-edit:hover {
+  background-color: #d35400;
+}
+
+.btn-delete:hover {
+  background-color: #c0392b;
+}
 </style>
