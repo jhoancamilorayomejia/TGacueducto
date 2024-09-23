@@ -27,13 +27,14 @@
           v-model="userType"
           id="userType"
           class="input-field"
-          name="userType">
+          name="userType"
+        >
           <option value="admin">Administrador</option>
           <option value="company">Servicio Acueducto</option>
           <option value="customer">Usuario/Cliente</option>
         </select>
       </div>
-      <button class="login-button" @click="submitFrom">Iniciar sesión</button>
+      <button class="login-button" @click="submitForm">Iniciar sesión</button>
       <p v-if="error" class="error-message">{{ error }}</p>
       <div class="forgot-password">
         <a href="#" class="forgot-link">¿Olvidaste la contraseña?</a>
@@ -52,11 +53,12 @@ export default {
   setup() {
     const email = ref('');
     const password = ref('');
-    const userType = ref('admin'); // Default to admin
+    const userType = ref('admin'); // Tipo de usuario predeterminado
     const router = useRouter();
     const toast = useToast();
+    const error = ref('');
 
-    const submitFrom = async () => {
+    const submitForm = async () => {
       const user = {
         email: email.value,
         password: password.value,
@@ -67,32 +69,37 @@ export default {
         const response = await sessionService.getSession(user);
 
         if (response.data) {
-          const { ID, token } = response.data;
-          localStorage.setItem('ID', ID);
-          localStorage.setItem('token', token);
+          const { userID, access_token, userName } = response.data;
 
-          toast.success('Inicio de sesión exitoso!', {
+          // Guardar en localStorage
+          localStorage.setItem('userID', userID);
+          localStorage.setItem('userName', userName); // Asegúrate de que "nombre" se envía correctamente
+          localStorage.setItem('token', access_token);
+          localStorage.setItem('email', email.value);
+
+          toast.success(`Bienvenido, ${email.value}!`, { // Usa "nombre" para el mensaje
             timeout: 3000
           });
 
           // Redirigir basado en el tipo de usuario
           setTimeout(() => {
             if (userType.value === 'admin') {
-              router.push('/api/admins');
+              router.push(`/api/admins/${userID}`);
             } else if (userType.value === 'company') {
-              router.push('/api/company'); // Ajusta esta ruta según sea necesario
+              router.push(`/api/company/${userID}`);
             } else if (userType.value === 'customer') {
-              router.push('/api/customer'); // Ajusta esta ruta según sea necesario
+              router.push(`/api/welcome/${userID}`);
             }
           }, 3000);
         } else {
-          toast.error('Fallo al iniciar sesión.', {
+          error.value = 'Fallo al iniciar sesión.';
+          toast.error(error.value, {
             timeout: 5000
           });
         }
-
-      } catch (error) {
-        toast.error('Ocurrió un error durante el inicio de sesión.', {
+      } catch (err) {
+        error.value = 'Ocurrió un error durante el inicio de sesión.';
+        toast.error(error.value, {
           timeout: 5000
         });
       }
@@ -102,11 +109,14 @@ export default {
       email,
       password,
       userType,
-      submitFrom
+      submitForm,
+      error
     };
   }
 };
 </script>
+
+
 
 
 

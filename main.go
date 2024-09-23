@@ -49,7 +49,7 @@ func main() {
 	//Ruta de acciones para company
 	r.PUT("/api/companies/:idcompany", controllers.UpdateCompany)
 	r.DELETE("/api/companies/:idcompany", controllers.DeleteCompany)
-	r.GET("/api/allcustomer", controllers.GetAllUsuarios)
+	r.GET("/api/allcustomer/:idcompany", controllers.GetUsuariosPorIDCompany)
 
 	//Ruta de acciones para customer
 	r.PUT("/api/customer/:idcustomer", controllers.UpdateCustomer)

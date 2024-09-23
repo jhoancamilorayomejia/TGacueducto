@@ -1,112 +1,96 @@
 <template>
-    <div class="invoice-container">
-      <div class="invoice-header">
-        <h2>Área de Gestión de Clientes</h2>
-      </div>
-      <div class="invoice-buttons">
-        <button class="button-nuevoPrestadorSP" @click="UsuarioForm">+ Nuevo Cliente</button>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Nombre del Titular</th>
-            <th>Apellidos</th>
-            <th>Localidad</th>
-            <th>Teléfono</th>
-            <th>Email</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="usuario in usuarios" :key="usuario.idcustomer">
-            <td>
-              <input v-model="usuario.name" />
-            </td>
-            <td>
-              <input v-model="usuario.last_name" />
-            </td>
-            <td>
-              <input v-model="usuario.address" />
-            </td>
-            <td>
-              <input v-model="usuario.phone" />
-            </td>
-            <td>
-              <input v-model="usuario.email" />
-            </td>
-            <td>
-              <button @click="updateCustomer(usuario)" class="btn-save">Guardar</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+  <div class="invoice-container">
+    <div class="invoice-header">
+      <h2>Área de Gestión de Clientes</h2>
     </div>
-  </template>
-  
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        usuarios: []
-      };
-    },
-    created() {
-      this.fetchUsuarios();
-    },
-    methods: {
-      async fetchUsuarios() {
-        try {
-          const token = localStorage.getItem('token');
-          const response = await axios.get('/api/allcustomer', {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          });
-          this.usuarios = response.data;
-        } catch (error) {
-          console.error('Error fetching usuarios:', error);
-        }      
-      },
-      UsuarioForm() {
-        // Redireccionar a la página de registro de cliente
-        this.$router.push('/api/registerCustomer');
-      },
-      async updateCustomer(customer) {
-        try {
-          const token = localStorage.getItem('token');
-          await axios.put(`/api/customer/${customer.idcustomer}`, customer, {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          });
-          alert('Cliente actualizado exitosamente.');
-        } catch (error) {
-          console.error('Error al actualizar cliente:', error);
-          alert('Hubo un error al intentar actualizar el cliente.');
-        }
-      },
-      async deleteCustomer(idcustomer, idcompany) {
-        const confirmDelete = confirm("¿Estás seguro de que deseas eliminar este cliente?");
-        if (confirmDelete) {
-          try {
-            const token = localStorage.getItem('token');
-            await axios.delete(`/api/customer/${idcustomer}/${idcompany}`, {
-              headers: {
-                Authorization: `Bearer ${token}`
-              }
-            });
-            this.fetchUsuarios(); // Volver a obtener la lista de clientes después de eliminar
-          } catch (error) {
-            console.error('Error al eliminar cliente:', error);
-            alert('Hubo un error al intentar eliminar al cliente.');
+    <div class="invoice-buttons">
+      <button class="button-nuevoPrestadorSP" @click="UsuarioForm">+ Nuevo Cliente</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre del Titular</th>
+          <th>Apellidos</th>
+          <th>Localidad</th>
+          <th>Teléfono</th>
+          <th>Email</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="usuario in usuarios" :key="usuario.idcustomer">
+          <td>
+            <input v-model="usuario.name" />
+          </td>
+          <td>
+            <input v-model="usuario.last_name" />
+          </td>
+          <td>
+            <input v-model="usuario.address" />
+          </td>
+          <td>
+            <input v-model="usuario.phone" />
+          </td>
+          <td>
+            <input v-model="usuario.email" />
+          </td>
+          <td>
+            <button @click="updateCustomer(usuario)" class="btn-save">Guardar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      usuarios: []
+    };
+  },
+  created() {
+    this.fetchUsuarios();
+  },
+  methods: {
+    async fetchUsuarios() {
+      try {
+        const token = localStorage.getItem('token');
+        const userID = localStorage.getItem('userID'); // Obtener el userID del localStorage
+        const response = await axios.get(`/api/allcustomer/${userID}`, { // Enviar el userID en la URL
+          headers: {
+            Authorization: `Bearer ${token}`
           }
-        }
+        });
+        this.usuarios = response.data.usuarios; // Ajustar según el formato de la respuesta del backend
+      } catch (error) {
+        console.error('Error fetching usuarios:', error);
+      }
+    },
+    UsuarioForm() {
+      // Redireccionar a la página de registro de cliente
+      this.$router.push('/api/registerCustomer');
+    },
+    async updateCustomer(customer) {
+      try {
+        const token = localStorage.getItem('token');
+        await axios.put(`/api/customer/${customer.idcustomer}`, customer, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        alert('Cliente actualizado exitosamente.');
+      } catch (error) {
+        console.error('Error al actualizar cliente:', error);
+        alert('Hubo un error al intentar actualizar el cliente.');
       }
     }
-  };
-  </script>
+  }
+};
+</script>
   
   <style scoped>
   body {

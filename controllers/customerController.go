@@ -106,11 +106,13 @@ type Customer2 struct {
 	Email      string `json:"email"`
 }
 
-// GetAllUsuarios maneja la solicitud para obtener todos los registros de la tabla customer
-func GetAllUsuarios(c *gin.Context) {
+// GetUsuariosPorIDCompany maneja la solicitud para obtener los registros de la tabla customer relacionados con un idcompany específico
+func GetUsuariosPorIDCompany(c *gin.Context) {
+	idCompany := c.Param("idcompany") // Obtiene el ID de la empresa desde los parámetros de la ruta
 	var allusuarios []Customer2
 
-	rows, err := db.DB.Query("SELECT idcustomer, idcompany, name, last_name, address, phone, email FROM customer")
+	// Realiza la consulta a la base de datos
+	rows, err := db.DB.Query("SELECT idcustomer, idcompany, name, last_name, address, phone, email FROM customer WHERE idcompany = $1", idCompany)
 	if err != nil {
 		log.Printf("Error querying customer table: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying customer table"})
@@ -118,6 +120,7 @@ func GetAllUsuarios(c *gin.Context) {
 	}
 	defer rows.Close()
 
+	// Itera sobre los resultados
 	for rows.Next() {
 		var usuario Customer2
 		err := rows.Scan(&usuario.IDcustomer, &usuario.IDcompany, &usuario.Name, &usuario.LastName, &usuario.Localidad, &usuario.Phone, &usuario.Email)
@@ -129,11 +132,13 @@ func GetAllUsuarios(c *gin.Context) {
 		allusuarios = append(allusuarios, usuario)
 	}
 
+	// Verifica si hubo un error al iterar sobre los rows
 	if err = rows.Err(); err != nil {
 		log.Printf("Error iterating over rows: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error iterating over rows"})
 		return
 	}
 
-	c.JSON(http.StatusOK, allusuarios)
+	// Responde con los datos obtenidos
+	c.JSON(http.StatusOK, gin.H{"usuarios": allusuarios})
 }

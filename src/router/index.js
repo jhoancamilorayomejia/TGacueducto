@@ -10,16 +10,17 @@ import EditAdmin from '../components/EditAdmin.vue'; // Para modificar Admin
 import EditCompany from '../components/EditCompany.vue';
 import EditCustomer from '../components/sectionCompany/EditCustomer.vue'; // Para modificar Customer
 import InfoCompany from '../components/CompanyInfo.vue';
+import WelcomeCustomer from '../components/sectionCustomer/WelcomeCustomer.vue';
 
 const routes = [
   { path: '/', component: LoginView },
-  { path: '/api/admins', component: TableView },
+  { path: '/api/admins/:idadmin', component: TableView },
   { path: '/api/register', component: RegisterCompany },
   { path: '/api/registerAdmin', component: RegisterAdmin },
   { path: '/api/registerCustomer', component: RegisterCustomer },
   { path: '/api/AllCompany', component: TableAllCompany },
-  { path: '/api/company', component: TableSectionCompany },
-  { path: '/api/customer', component: RegisterCustomer },
+  { path: '/api/company/:idcompany', component: TableSectionCompany },
+  { path: '/api/welcome/:idcustomer', component: WelcomeCustomer },
   { path: '/api/admin/edit/:idadmin', name: 'EditAdmin', component: EditAdmin }, // Ruta de edición
   { path: '/api/company/edit/:idcompany', name: 'EditCompany', component: EditCompany },
   { path: '/api/customer/edit/:idcustomer', name: 'EditCustomer', component: EditCustomer }, // Ruta de edición para customer

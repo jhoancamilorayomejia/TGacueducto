@@ -1,10 +1,8 @@
-1. Asegúrate de que TableView.vue Redirige Correctamente
-vue
-Copiar código
 <template>
   <div class="invoice-container">
     <div class="invoice-header">
       <h2>Área de Administrador</h2>
+      <h5>Bienvenido, {{ userEmail }} con ID: {{ userID }} nombre: {{ userName }}</h5>
     </div>
     <div class="invoice-buttons">
       <button class="btn" @click="adminForm">Nuevo Admin</button>
@@ -43,11 +41,17 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      admins: []
+      admins: [],
+      userEmail: '', // Correo del usuario
+      userID: '',    // ID del usuario
+      userName: ''   // Nombre del usuario
     };
   },
   created() {
     this.fetchAdmins();
+    this.userEmail = localStorage.getItem('email'); // Obtener el correo del localStorage
+    this.userID = localStorage.getItem('userID');   // Obtener el ID del usuario
+    this.userName = localStorage.getItem('userName');  // Obtener el nombre del usuario
   },
   methods: {
     async fetchAdmins() {

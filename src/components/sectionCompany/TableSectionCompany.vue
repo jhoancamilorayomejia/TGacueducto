@@ -2,6 +2,7 @@
   <div class="invoice-container">
     <div class="invoice-header">
       <h2>Área de Gestión de Empresas</h2>
+      <h5>Bienvenido, {{ userEmail }} con ID: {{ userID }}</h5>
     </div>
     <div class="invoice-buttons">
       <button class="button-nuevoPrestadorSP" @click="UsuarioForm">+ Nuevo Cliente</button>
@@ -14,7 +15,7 @@
           <th>Localidad</th>
           <th>Teléfono</th>
           <th>Email</th>
-          <th>Datos</th>
+          <th>Acción</th>
         </tr>
       </thead>
       <tbody>
@@ -24,8 +25,9 @@
           <td>{{ usuario.address }}</td>
           <td>{{ usuario.phone }}</td>
           <td>{{ usuario.email }}</td>
-          <td>
+          <td class="action-buttons">
             <button class="btn-edit" @click="editCustomer(usuario.idcustomer)">Modificar</button>
+            <button class="btn-delete" @click="deleteCustomer(usuario.idcustomer)">Eliminar</button>
           </td>
         </tr>
       </tbody>
@@ -39,41 +41,44 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      usuarios: []
+      usuarios: [],
+      userEmail: '', // Email del usuario
+      userID: '' // ID del usuario
     };
   },
   created() {
     this.fetchUsuarios();
+    this.userEmail = localStorage.getItem('email'); // Obtener el correo del localStorage
+    this.userID = localStorage.getItem('userID'); // Cambiar 'ID' a 'userID'
   },
   methods: {
     async fetchUsuarios() {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('/api/allcustomer', { 
+        const userID = localStorage.getItem('userID'); // Obtener el ID del localStorage
+        const response = await axios.get(`/api/allcustomer/${userID}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
-        this.usuarios = response.data;
+        this.usuarios = response.data.usuarios; // Ajustar según el formato de respuesta
       } catch (error) {
         console.error('Error fetching usuarios:', error);
-      }      
+      }
     },
     UsuarioForm() {
-      // Redireccionar a la página de registro de cliente
       this.$router.push('/api/registerCustomer');
     },
-    async deleteCustomer(idcustomer, idcompany) {
+    async deleteCustomer(idcustomer) {
       const confirmDelete = confirm("¿Estás seguro de que deseas eliminar este cliente?");
       if (confirmDelete) {
         try {
           const token = localStorage.getItem('token');
-          await axios.delete(`/api/customer/${idcustomer}/${idcompany}`, {
+          await axios.delete(`/api/customer/${idcustomer}`, {
             headers: {
               Authorization: `Bearer ${token}`
             }
           });
-          // Volver a obtener la lista de clientes después de eliminar
           this.fetchUsuarios();
         } catch (error) {
           console.error('Error al eliminar cliente:', error);
@@ -154,6 +159,53 @@ th, td {
 
 th {
   background-color: #f2f2f2;
+}
+
+button {
+  padding: 5px 10px;
+  background-color: #037bca;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #3498db;
+}
+
+.btn-edit {
+  background-color: #3498db;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.btn-edit:hover {
+  background-color: #2980b9;
+}
+
+.btn-delete {
+  background-color: #e74c3c;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  
+}
+
+.btn-delete:hover {
+  background-color: #c0392b;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center; 
+  gap: 15px; 
 }
 
 
