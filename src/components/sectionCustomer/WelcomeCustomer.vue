@@ -1,8 +1,8 @@
 <template>
   <div class="welcome-container">
     <div class="welcome-header">
-      <h2>Bienvenido a este sistema de facturación digital de pequeños acueductos</h2>
-      <h5>Bienvenido, {{ userEmail }} con ID: {{ userID }}</h5>
+      <h2>Sistema de Facturación Digital de Pequeños Acueductos</h2>
+      <h5>Bienvenido, {{ userName }} - N° Cedula: {{ userCedula }}</h5>
     </div>
     <div class="welcome-buttons">
       <!-- aqui para añadir botones funcionales-->
@@ -17,13 +17,17 @@ export default {
     return {
       usuarios: [],
       userEmail: '', // Email del usuario
-      userID: '' // ID del usuario
+      userID: '', // ID del usuario
+      userName: '',
+      userCedula: ''
     };
   },
   created() {
     this.fetchUsuarios();
     this.userEmail = localStorage.getItem('email'); // Obtener el correo del localStorage
-    this.userID = localStorage.getItem('userID'); // Cambiar 'ID' a 'userID'
+    this.userID = localStorage.getItem('userID'); // OBtener ID del usuario cliente
+    this.userName = localStorage.getItem('userName'); // Obtener el nombre del usuario cliente'
+    this.userCedula = localStorage.getItem('userCedula'); // Obtener la Cedula del usuario cliente'
   },
   methods: {
     async fetchUsuarios() {

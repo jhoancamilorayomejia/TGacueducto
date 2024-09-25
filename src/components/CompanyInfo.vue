@@ -10,16 +10,19 @@
         <thead>
           <tr>
             <th>ID de la Empresa</th>
+            <th>Cedula</th>
             <th>Nombre</th>
             <th>Apellido</th>
             <th>Localidad</th>
             <th>Teléfono</th>
             <th>Email</th>
+            <th>Historial de facturas</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="usuario in usuarios" :key="usuario.idcustomer">
             <td>{{ usuario.idcompany }}</td>
+            <td>{{ usuario.cedula }}</td>
             <td>{{ usuario.name }}</td>
             <td>{{ usuario.last_name }}</td>
             <td>{{ usuario.address }}</td>

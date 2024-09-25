@@ -1,33 +1,43 @@
 <template>
   <div class="invoice-container">
     <div class="invoice-header">
-      <h2>Área de Gestión de Empresas</h2>
-      <h5>Bienvenido, {{ userEmail }} con ID: {{ userID }}</h5>
+      <h2>Área de Gestión de Empresa</h2>
+      <div class="user-info">
+        <h4>Bienvenido, {{ userName }} </h4>
+        <h5>Correo: {{ userEmail }} | NIT: {{ userNit }}</h5>
+      </div>
     </div>
     <div class="invoice-buttons">
       <button class="button-nuevoPrestadorSP" @click="UsuarioForm">+ Nuevo Cliente</button>
+      <button>Generar nuevas facturas</button>
     </div>
     <table>
       <thead>
         <tr>
+          <th>Cédula</th>
           <th>Nombre del Titular</th>
           <th>Apellidos</th>
           <th>Localidad</th>
           <th>Teléfono</th>
           <th>Email</th>
           <th>Acción</th>
+          <th>Ver Información</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="usuario in usuarios" :key="usuario.idcustomer">
+          <td>{{ usuario.cedula }}</td>
           <td>{{ usuario.name }}</td>
           <td>{{ usuario.last_name }}</td>
           <td>{{ usuario.address }}</td>
-          <td>{{ usuario.phone }}</td>
+          <td>(+57) {{ usuario.phone }}</td>
           <td>{{ usuario.email }}</td>
           <td class="action-buttons">
             <button class="btn-edit" @click="editCustomer(usuario.idcustomer)">Modificar</button>
             <button class="btn-delete" @click="deleteCustomer(usuario.idcustomer)">Eliminar</button>
+          </td>
+          <td>
+            <button class="btn-info" @click="viewCustomerInfo(usuario.idcustomer, usuario.name)">Ver Información</button>
           </td>
         </tr>
       </tbody>
@@ -43,25 +53,29 @@ export default {
     return {
       usuarios: [],
       userEmail: '', // Email del usuario
-      userID: '' // ID del usuario
+      userID: '', // ID del usuario
+      userName: '', // Nombre del usuario
+      userNit: ''
     };
   },
   created() {
     this.fetchUsuarios();
-    this.userEmail = localStorage.getItem('email'); // Obtener el correo del localStorage
-    this.userID = localStorage.getItem('userID'); // Cambiar 'ID' a 'userID'
+    this.userEmail = localStorage.getItem('email');
+    this.userID = localStorage.getItem('userID');
+    this.userName = localStorage.getItem('userName');
+    this.userNit = localStorage.getItem('userNit');
   },
   methods: {
     async fetchUsuarios() {
       try {
         const token = localStorage.getItem('token');
-        const userID = localStorage.getItem('userID'); // Obtener el ID del localStorage
+        const userID = localStorage.getItem('userID');
         const response = await axios.get(`/api/allcustomer/${userID}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
-        this.usuarios = response.data.usuarios; // Ajustar según el formato de respuesta
+        this.usuarios = response.data.usuarios; // Asegúrate de que la API devuelve el formato esperado
       } catch (error) {
         console.error('Error fetching usuarios:', error);
       }
@@ -88,13 +102,17 @@ export default {
     },
     editCustomer(idcustomer) {
       this.$router.push(`/api/customer/edit/${idcustomer}`);
-    }
+    },
+    viewCustomerInfo(idcustomer, name) {
+  this.$router.push({
+    path: `/api/customer/info-facture/${idcustomer}`,
+    query: { name }
+  });
+}
   }
 };
 </script>
 
-  
-  
 <style scoped>
 body {
   background-color: #ffffff; /* Fondo sólido para toda la página */
@@ -105,7 +123,7 @@ body {
 }
 
 .invoice-container {
-  background-color: #f3f3f3; /*color de formulario */
+  background-color: #f3f3f3; /* Color de formulario */
   padding: 20px;
   margin: 50px auto;
   width: 80%;
@@ -114,17 +132,22 @@ body {
 }
 
 .invoice-header {
+  display: flex;
+  justify-content: space-between; /* Alinea los elementos a los extremos */
   background-color: #62b5ec;
   padding: 15px;
   border-radius: 5px;
   margin-bottom: 20px;
-  /* text-align: center; */
   font-size: 15px;
+}
+
+.user-info {
+  text-align: right; /* Alinea el texto a la derecha */
+  color: rgb(0, 0, 0); /* Texto en blanco para visibilidad */
 }
 
 .invoice-buttons {
   display: flex;
-  /*justify-content: center; */
   gap: 10px;
   margin-bottom: 20px;
 }
@@ -138,7 +161,6 @@ body {
   cursor: pointer;
   font-size: 12px;
 }
-
 
 .btn:hover {
   background-color: #2980b9;
@@ -195,7 +217,6 @@ button:hover {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  
 }
 
 .btn-delete:hover {
@@ -208,6 +229,18 @@ button:hover {
   gap: 15px; 
 }
 
+.btn-info {
+  background-color: #e77325;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
 
+.btn-info:hover {
+  background-color: #d35400;
+}
 </style>
+
   

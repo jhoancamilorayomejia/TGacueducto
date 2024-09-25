@@ -62,22 +62,24 @@ export default {
       const user = {
         email: email.value,
         password: password.value,
-        userType: userType.value
+        userType: userType.value,
       };
 
       try {
         const response = await sessionService.getSession(user);
 
         if (response.data) {
-          const { userID, access_token, userName } = response.data;
+          const { userID, access_token, userName, userNit, userCedula } = response.data;
 
           // Guardar en localStorage
           localStorage.setItem('userID', userID);
           localStorage.setItem('userName', userName); // Asegúrate de que "nombre" se envía correctamente
+          localStorage.setItem('userNit', userNit);
+          localStorage.setItem('userCedula', userCedula);
           localStorage.setItem('token', access_token);
           localStorage.setItem('email', email.value);
 
-          toast.success(`Bienvenido, ${email.value}!`, { // Usa "nombre" para el mensaje
+          toast.success(`Bienvenido, ${userName}`,  { 
             timeout: 3000
           });
 

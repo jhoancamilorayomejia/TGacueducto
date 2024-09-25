@@ -8,7 +8,7 @@ import (
 // para company tendria que crear otra funcion de aqui.
 // GetAdminByEmail
 func GetAdminByEmail(email string) (*models.Admin, error) {
-	rows, err := db.DB.Query(`SELECT idadmin, password, secret_key FROM admin WHERE email = $1`, email)
+	rows, err := db.DB.Query(`SELECT idadmin, nombre, password, secret_key FROM admin WHERE email = $1`, email)
 	if err != nil {
 		return nil, err
 	}
@@ -17,7 +17,7 @@ func GetAdminByEmail(email string) (*models.Admin, error) {
 	admin := &models.Admin{}
 
 	for rows.Next() {
-		err := rows.Scan(&admin.IDadmin, &admin.Password, &admin.SecretKey)
+		err := rows.Scan(&admin.IDadmin, &admin.Nombre, &admin.Password, &admin.SecretKey)
 		if err != nil {
 			return nil, err
 		}

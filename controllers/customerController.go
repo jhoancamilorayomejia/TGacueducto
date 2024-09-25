@@ -12,6 +12,7 @@ import (
 type Customer struct {
 	IDcustomer int    `json:"idcustomer"`
 	IDcompany  int    `json:"idcompany"`
+	Cedula     string `json:"cedula"`
 	Name       string `json:"name"`
 	LastName   string `json:"last_name"`
 	Localidad  string `json:"address"`
@@ -28,7 +29,7 @@ func GetUsuarios(c *gin.Context) {
 	idcompany := c.Query("idcompany")
 
 	// Prepara la consulta SQL
-	query := "SELECT idcustomer, idcompany, name, last_name, address, phone, email FROM customer WHERE idcompany = $1"
+	query := "SELECT idcustomer, idcompany, cedula, name, last_name, address, phone, email FROM customer WHERE idcompany = $1"
 	rows, err := db.DB.Query(query, idcompany)
 	if err != nil {
 		log.Printf("Error querying usuario table: %v", err)
@@ -40,7 +41,7 @@ func GetUsuarios(c *gin.Context) {
 	// Itera sobre los resultados de la consulta
 	for rows.Next() {
 		var usuario Customer
-		err := rows.Scan(&usuario.IDcustomer, &usuario.IDcompany, &usuario.Name, &usuario.LastName, &usuario.Localidad, &usuario.Phone, &usuario.Email)
+		err := rows.Scan(&usuario.IDcustomer, &usuario.IDcompany, &usuario.Cedula, &usuario.Name, &usuario.LastName, &usuario.Localidad, &usuario.Phone, &usuario.Email)
 		if err != nil {
 			log.Printf("Error scanning usuario row: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error scanning usuario row"})
@@ -99,6 +100,7 @@ func UpdateCustomer(c *gin.Context) {
 type Customer2 struct {
 	IDcustomer int    `json:"idcustomer"`
 	IDcompany  int    `json:"idcompany"`
+	Cedula     string `json:"cedula"`
 	Name       string `json:"name"`
 	LastName   string `json:"last_name"`
 	Localidad  string `json:"address"` // Localidad en lugar de address para consistencia con JSON
@@ -112,7 +114,7 @@ func GetUsuariosPorIDCompany(c *gin.Context) {
 	var allusuarios []Customer2
 
 	// Realiza la consulta a la base de datos
-	rows, err := db.DB.Query("SELECT idcustomer, idcompany, name, last_name, address, phone, email FROM customer WHERE idcompany = $1", idCompany)
+	rows, err := db.DB.Query("SELECT idcustomer, idcompany, cedula, name, last_name, address, phone, email FROM customer WHERE idcompany = $1", idCompany)
 	if err != nil {
 		log.Printf("Error querying customer table: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying customer table"})
@@ -123,7 +125,7 @@ func GetUsuariosPorIDCompany(c *gin.Context) {
 	// Itera sobre los resultados
 	for rows.Next() {
 		var usuario Customer2
-		err := rows.Scan(&usuario.IDcustomer, &usuario.IDcompany, &usuario.Name, &usuario.LastName, &usuario.Localidad, &usuario.Phone, &usuario.Email)
+		err := rows.Scan(&usuario.IDcustomer, &usuario.IDcompany, &usuario.Cedula, &usuario.Name, &usuario.LastName, &usuario.Localidad, &usuario.Phone, &usuario.Email)
 		if err != nil {
 			log.Printf("Error scanning customer row: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error scanning customer row"})

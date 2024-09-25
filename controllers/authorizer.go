@@ -30,8 +30,10 @@ func Login(c *gin.Context) {
 	var apiKey *storage.APIKey
 	var apiKeyResponse *storage.APIKeyResponse
 	var userType string
-	var userID int      // Para almacenar el ID del usuario
-	var userName string // Para almacenar el nombre del usuario
+	var userID int        // Para almacenar el ID del usuario
+	var userName string   // Para almacenar el nombre del usuario
+	var userNit string    //Para almacenar el Nit en company
+	var userCedula string //Para almacenar la cedula en customer
 
 	switch auth.UserType {
 	case "admin":
@@ -85,6 +87,7 @@ func Login(c *gin.Context) {
 		userType = "company"
 		userID = company.IDcompany // Suponiendo que `company` tiene un campo ID
 		userName = company.Nombre  // Suponiendo que `company` tiene un campo Nombre
+		userNit = company.IDnit
 
 	case "customer":
 		customer, err := storage.GetCustomerByEmail(auth.Email)
@@ -111,6 +114,7 @@ func Login(c *gin.Context) {
 		userType = "customer"
 		userID = customer.IDcustomer // Suponiendo que `customer` tiene un campo ID
 		userName = customer.Name     // Suponiendo que `customer` tiene un campo Nombre
+		userCedula = customer.Cedula
 
 	default:
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user type"})
@@ -129,6 +133,8 @@ func Login(c *gin.Context) {
 		"userType":     userType,
 		"userID":       userID,   // ID del usuario
 		"userName":     userName, // Nombre del usuario
+		"userNit":      userNit,
+		"userCedula":   userCedula,
 		"message":      "user logged successfully",
 	})
 }

@@ -148,7 +148,7 @@ th, td {
 }
 
 .btn-info {
-  background-color: #d35400;
+  background-color: #e77325;
   color: white;
   border: none;
   padding: 5px 10px;

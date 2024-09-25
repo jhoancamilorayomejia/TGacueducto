@@ -9,7 +9,6 @@ type Company struct {
 	Phone     string `json:"phone"`
 	Email     string `json:"email"`
 	Password  string `json:"password"`
-	IDuser    string `json:"iduser"`
 	Tipouser  string `json:"tipouser"`
 	SecretKey string `json:"secret_key"`
 }

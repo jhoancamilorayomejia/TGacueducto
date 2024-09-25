@@ -2,7 +2,11 @@
   <div class="invoice-container">
     <div class="invoice-header">
       <h2>Área de Administrador</h2>
-      <h5>Bienvenido, {{ userEmail }} con ID: {{ userID }} nombre: {{ userName }}</h5>
+      
+      <div class="user-info">
+        <h4>Bienvenido, {{ userName }} - ID: {{ userID }}</h4>
+      </div>
+      <!--h5>Bienvenido, {{ userEmail }} con ID: {{ userID }} nombre: {{ userName }}</h5-->
     </div>
     <div class="invoice-buttons">
       <button class="btn" @click="adminForm">Nuevo Admin</button>
@@ -120,12 +124,18 @@ body {
 }
 
 .invoice-header {
+  display: flex;
+  justify-content: space-between; /* Alinea los elementos a los extremos */
   background-color: #62b5ec;
   padding: 15px;
   border-radius: 5px;
   margin-bottom: 20px;
-  /* text-align: center; */
   font-size: 15px;
+}
+
+.user-info {
+  text-align: right; /* Alinea el texto a la derecha */
+  color: rgb(0, 0, 0); /* Texto en blanco para visibilidad */
 }
 
 .invoice-buttons {

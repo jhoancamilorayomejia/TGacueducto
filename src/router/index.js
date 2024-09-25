@@ -11,6 +11,7 @@ import EditCompany from '../components/EditCompany.vue';
 import EditCustomer from '../components/sectionCompany/EditCustomer.vue'; // Para modificar Customer
 import InfoCompany from '../components/CompanyInfo.vue';
 import WelcomeCustomer from '../components/sectionCustomer/WelcomeCustomer.vue';
+import FactureInfoCustomer from '@/components/sectionCompany/FactureInfoCustomer.vue';
 
 const routes = [
   { path: '/', component: LoginView },
@@ -25,6 +26,8 @@ const routes = [
   { path: '/api/company/edit/:idcompany', name: 'EditCompany', component: EditCompany },
   { path: '/api/customer/edit/:idcustomer', name: 'EditCustomer', component: EditCustomer }, // Ruta de edición para customer
   { path: '/api/company/info/:idcompany', name: 'InfoCompany', component: InfoCompany },
+  { path: '/api/customer/info-facture/:idcustomer', name: 'FactureInfoCustomer', component: FactureInfoCustomer },
+
 
 
   { path: '/:catchAll(.*)', redirect: '/' } // Ruta catch-all

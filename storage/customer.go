@@ -9,7 +9,7 @@ import (
 
 // GetCustomerByEmail obtiene un cliente a partir de su correo electrónico
 func GetCustomerByEmail(email string) (*models.Customer, error) {
-	rows, err := db.DB.Query(`SELECT idcustomer, password, secret_key FROM customer WHERE email = $1`, email)
+	rows, err := db.DB.Query(`SELECT idcustomer, cedula, name, password, secret_key FROM customer WHERE email = $1`, email)
 	if err != nil {
 		return nil, err
 	}
@@ -18,7 +18,7 @@ func GetCustomerByEmail(email string) (*models.Customer, error) {
 	customer := &models.Customer{}
 
 	for rows.Next() {
-		err := rows.Scan(&customer.IDcustomer, &customer.Password, &customer.SecretKey)
+		err := rows.Scan(&customer.IDcustomer, &customer.Cedula, &customer.Name, &customer.Password, &customer.SecretKey)
 		if err != nil {
 			return nil, err
 		}

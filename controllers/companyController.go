@@ -6,6 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jhoancamilorayomejia/TGacueducto/db"
+	"github.com/jhoancamilorayomejia/TGacueducto/models"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Company representa la estructura de la tabla company en la base de datos
@@ -83,6 +85,39 @@ func UpdateCompany(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Company updated successfully"})
+}
+
+// CreateCompany maneja la solicitud para crear una nueva empresa
+func CreateCompany(c *gin.Context) {
+	var company models.Company // Usamos la estructura del archivo models
+
+	// Vincular los datos del JSON al struct `Company`
+	if err := c.BindJSON(&company); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos"})
+		return
+	}
+
+	// Encriptar la contraseña antes de guardarla
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(company.Password), bcrypt.DefaultCost)
+	if err != nil {
+		log.Printf("Error hashing password: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al procesar la contraseña"})
+		return
+	}
+	company.Password = string(hashedPassword)
+
+	// Inserta la nueva empresa en la tabla company
+	_, err = db.DB.Exec(`
+		INSERT INTO company (nit, name, address, phone, email, password, secret_key)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)
+	`, company.IDnit, company.Nombre, company.Address, company.Phone, company.Email, company.Password, company.SecretKey)
+	if err != nil {
+		log.Printf("Error inserting company: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "No se pudo registrar la Empresa"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Empresa registrada con éxito"})
 }
 
 /*

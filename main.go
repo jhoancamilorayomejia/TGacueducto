@@ -41,6 +41,7 @@ func main() {
 
 	// Ruta de acciones para admin
 	r.POST("/api/register-user", controllers.CreateAdmin)
+	r.POST("/api/register-company", controllers.CreateCompany)
 	r.DELETE("/api/admins/:idadmin", controllers.DeleteAdmin)
 	r.PUT("/api/admins/:idadmin", controllers.UpdateAdmin)
 	r.GET("/api/company/:idcompany", controllers.GetCompanyByID) // Obtiene una empresa por ID
@@ -50,6 +51,9 @@ func main() {
 	r.PUT("/api/companies/:idcompany", controllers.UpdateCompany)
 	r.DELETE("/api/companies/:idcompany", controllers.DeleteCompany)
 	r.GET("/api/allcustomer/:idcompany", controllers.GetUsuariosPorIDCompany)
+	//r.GET("/api/facturas", controllers.GetAllFactures)
+
+	r.GET("/api/facturas/:idcustomer", controllers.GetAllFactures)
 
 	//Ruta de acciones para customer
 	r.PUT("/api/customer/:idcustomer", controllers.UpdateCustomer)
