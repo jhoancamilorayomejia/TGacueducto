@@ -51,12 +51,23 @@ func main() {
 	r.PUT("/api/companies/:idcompany", controllers.UpdateCompany)
 	r.DELETE("/api/companies/:idcompany", controllers.DeleteCompany)
 	r.GET("/api/allcustomer/:idcompany", controllers.GetUsuariosPorIDCompany)
+	r.POST("/api/registerCustomer", controllers.RegisterCustomer)
+	r.POST("/api/facturas", controllers.CreateFacture)
 	//r.GET("/api/facturas", controllers.GetAllFactures)
 
 	r.GET("/api/facturas/:idcustomer", controllers.GetAllFactures)
 
 	//Ruta de acciones para customer
 	r.PUT("/api/customer/:idcustomer", controllers.UpdateCustomer)
+	r.GET("/api/facturas", controllers.GetAllFactures)
+
+	//mercado pago
+	// Ruta para crear la preferencia de pago
+	//r.POST("/api/create_preference", controllers.CreatePreferenceHandler)
+	// Configurar las rutas
+	//r.POST("/api/create_payment", controllers.CreatePayment)
+	//r.GET("/api/capture_payment", controllers.CapturePayment)
+	r.POST("/api/pay", controllers.CreatePayment)
 
 	err = r.Run(":8081")
 	if err != nil {

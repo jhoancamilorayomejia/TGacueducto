@@ -6,6 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jhoancamilorayomejia/TGacueducto/db"
+	"github.com/jhoancamilorayomejia/TGacueducto/models"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Usuario representa la estructura de la tabla usuarios en la base de datos
@@ -19,6 +21,7 @@ type Customer struct {
 	Phone      string `json:"phone"`
 	Email      string `json:"email"`
 	Password   string `json:"password"`
+	SecretKey  string `json:"secret_key"`
 }
 
 // GetUsuarios maneja la solicitud para obtener los registros de la tabla usuarios filtrados por idcompany
@@ -143,4 +146,47 @@ func GetUsuariosPorIDCompany(c *gin.Context) {
 
 	// Responde con los datos obtenidos
 	c.JSON(http.StatusOK, gin.H{"usuarios": allusuarios})
+}
+
+// RegisterCustomer maneja la solicitud para registrar un nuevo cliente
+func RegisterCustomer(c *gin.Context) {
+	var client Customer
+	if err := c.BindJSON(&client); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos"})
+		return
+	}
+
+	// Generar un secret_key único
+	secretKey := models.GenerateRandomHexString(32) // Genera una cadena hex con 32 bytes
+	client.SecretKey = secretKey
+
+	// Verificar si la compañía existe
+	var exists bool
+	err := db.DB.QueryRow(`SELECT EXISTS (SELECT 1 FROM company WHERE idcompany = $1)`, client.IDcompany).Scan(&exists)
+	if err != nil || !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "La compañía seleccionada no existe"})
+		return
+	}
+
+	// Encriptar la contraseña antes de guardarla
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(client.Password), bcrypt.DefaultCost)
+	if err != nil {
+		log.Printf("Error hashing password: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al procesar la contraseña"})
+		return
+	}
+	client.Password = string(hashedPassword)
+
+	// Insertar el cliente en la base de datos
+	_, err = db.DB.Exec(`
+		INSERT INTO customer (idcompany, cedula, name, last_name, address, phone, email, password, secret_key)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+	`, client.IDcompany, client.Cedula, client.Name, client.LastName, client.Localidad, client.Phone, client.Email, client.Password, client.SecretKey)
+	if err != nil {
+		log.Printf("Error inserting customer: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "No se pudo registrar el cliente"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Cliente registrado con éxito"})
 }

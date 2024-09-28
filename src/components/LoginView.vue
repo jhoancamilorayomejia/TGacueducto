@@ -30,14 +30,14 @@
           name="userType"
         >
           <option value="admin">Administrador</option>
-          <option value="company">Servicio Acueducto</option>
-          <option value="customer">Usuario/Cliente</option>
+          <option value="company">Entidad</option>
+          <option value="customer">Cliente</option>
         </select>
       </div>
       <button class="login-button" @click="submitForm">Iniciar sesión</button>
       <p v-if="error" class="error-message">{{ error }}</p>
       <div class="forgot-password">
-        <a href="#" class="forgot-link">¿Olvidaste la contraseña?</a>
+        <!--a href="#" class="forgot-link">¿Olvidaste la contraseña?</a-->
       </div>
     </div>
   </div>

@@ -9,7 +9,6 @@
     </div>
     <div class="invoice-buttons">
       <button class="button-nuevoPrestadorSP" @click="UsuarioForm">+ Nuevo Cliente</button>
-      <button>Generar nuevas facturas</button>
     </div>
     <table>
       <thead>

@@ -9,10 +9,13 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@mercadopago/sdk-react": "^0.0.19",
     "axios": "^1.7.7",
     "bcryptjs": "^2.4.3",
     "core-js": "^3.8.3",
     "jspdf": "^2.5.2",
+    "mercadopago": "^2.0.15",
+    "sweetalert2": "^11.14.1",
     "vue": "^3.2.13",
     "vue-router": "^4.0.13",
     "vue-toastification": "^2.0.0-rc.5",
