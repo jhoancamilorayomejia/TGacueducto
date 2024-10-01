@@ -93,10 +93,10 @@ export default {
       doc.save(`Factura_${factura.facturenumber}.pdf`);
     },
 
-    // Método para redirigir a la vista de pago
     goToPayment(totalPay) {
-      this.$router.push({ path: `/api/payment/${totalPay}` }); // Redirige a la vista de pago con el monto
-    }
+  console.log("Monto total al hacer clic:", totalPay); // Imprimir para depurar
+  this.$router.push({ path: `/api/payment/${totalPay}` }); // Redirige a la vista de pago con el monto
+}
   }
 };
 </script>

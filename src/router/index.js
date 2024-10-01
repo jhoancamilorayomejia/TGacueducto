@@ -33,7 +33,7 @@ const routes = [
   { path: '/api/company/info/:idcompany', name: 'InfoCompany', component: InfoCompany },
   { path: '/api/customer/info-facture/:idcustomer', name: 'FactureInfoCustomer', component: FactureInfoCustomer },
   { path: '/api/customer/new-facture/:idcustomer', name: 'FactureNew', component: FactureNew },
-  { path: '/api/payment/:amount', component: PayView },
+  { path: '/api/payment/:totalpay', component: PayView },
   //{ path: '/success', component: SuccessMessage },
   //{ path: '/failure', component: FailureMessage },
   //{ path: '/pending', component: PendingStatus },
@@ -41,6 +41,7 @@ const routes = [
   //{ path: '/success', component: SuccessMessage },
   //{ path: '/failure', component: FailureMessage },
   //{ path: '/pending', component: PendingStatus },
+
 
 
 

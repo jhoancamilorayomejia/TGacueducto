@@ -3,7 +3,8 @@ package main
 import (
 	"log"
 
-	"github.com/gin-contrib/cors"
+	//"github.com/gin-contrib/cors"
+
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 
@@ -14,7 +15,7 @@ import (
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatalf("Error loading .env file")
+		log.Fatalf("Error loading .env file ")
 	}
 
 	conn, err := db.ConnectDB()
@@ -25,10 +26,10 @@ func main() {
 
 	r := gin.Default()
 
-	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"*"}
+	//config := cors.DefaultConfig()
+	//config.AllowOrigins = []string{"*"}
 
-	r.Use(cors.New(config))
+	//r.Use(cors.New(config))
 
 	r.GET("/api/admins", controllers.GetAdmins)
 	r.GET("/api/AllCompany", controllers.GetCompanies) // Ruta mostrar tabla de empresas
@@ -63,11 +64,11 @@ func main() {
 
 	//mercado pago
 	// Ruta para crear la preferencia de pago
-	//r.POST("/api/create_preference", controllers.CreatePreferenceHandler)
-	// Configurar las rutas
-	//r.POST("/api/create_payment", controllers.CreatePayment)
-	//r.GET("/api/capture_payment", controllers.CapturePayment)
-	r.POST("/api/pay", controllers.CreatePayment)
+	// Rutas para Mercado Pago
+	// Definir la ruta para crear la preferencia de pago
+	// Ruta para obtener los detalles del producto
+
+	r.POST("/api/payment/preference", controllers.CreatePreference)
 
 	err = r.Run(":8081")
 	if err != nil {
