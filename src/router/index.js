@@ -14,9 +14,7 @@ import WelcomeCustomer from '../components/sectionCustomer/WelcomeCustomer.vue';
 import FactureInfoCustomer from '@/components/sectionCompany/FactureInfoCustomer.vue';
 import FactureNew from '@/components/sectionCompany/FactureNew.vue';
 import PayView from '../components/sectionCustomer/payView.vue';
-//import SuccessMessage from '../components/sectionCustomer/SuccessMessage.vue';
-//import FailureMessage from '../components/sectionCustomer/FailureMessage.vue';
-//import PendingStatus from '../components/sectionCustomer/PendingStatus.vue';
+
 
 const routes = [
   { path: '/', component: LoginView },
@@ -34,14 +32,6 @@ const routes = [
   { path: '/api/customer/info-facture/:idcustomer', name: 'FactureInfoCustomer', component: FactureInfoCustomer },
   { path: '/api/customer/new-facture/:idcustomer', name: 'FactureNew', component: FactureNew },
   { path: '/api/payment/:totalpay', component: PayView },
-  //{ path: '/success', component: SuccessMessage },
-  //{ path: '/failure', component: FailureMessage },
-  //{ path: '/pending', component: PendingStatus },
-
-  //{ path: '/success', component: SuccessMessage },
-  //{ path: '/failure', component: FailureMessage },
-  //{ path: '/pending', component: PendingStatus },
-
 
 
 

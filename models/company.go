@@ -4,11 +4,10 @@ package models
 type Company struct {
 	IDcompany int    `json:"idcompany"`
 	IDnit     string `json:"nit"`
-	Nombre    string `json:"name"`
+	Nombre    string `json:"Name"`
 	Address   string `json:"address"`
 	Phone     string `json:"phone"`
 	Email     string `json:"email"`
 	Password  string `json:"password"`
-	Tipouser  string `json:"tipouser"`
 	SecretKey string `json:"secret_key"`
 }

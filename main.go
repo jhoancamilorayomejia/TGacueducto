@@ -27,11 +27,6 @@ func main() {
 
 	r := gin.Default()
 
-	//config := cors.DefaultConfig()
-	//config.AllowOrigins = []string{"*"}
-
-	//r.Use(cors.New(config))
-
 	r.GET("/api/admins", controllers.GetAdmins)
 	r.GET("/api/AllCompany", controllers.GetCompanies) // Ruta mostrar tabla de empresas
 	r.GET("/api/customer", controllers.GetUsuarios)    // Ruta mostrar tabla de clientes/usuarios
@@ -55,7 +50,8 @@ func main() {
 	r.GET("/api/allcustomer/:idcompany", controllers.GetUsuariosPorIDCompany)
 	r.POST("/api/registerCustomer", controllers.RegisterCustomer)
 	r.POST("/api/facturas", controllers.CreateFacture)
-	//r.GET("/api/facturas", controllers.GetAllFactures)
+	r.DELETE("/api/facture/:idfacture", controllers.DeleteFacture)
+	r.DELETE("/api/customer/:idcustomer", controllers.DeleteCustomer)
 
 	r.GET("/api/facturas/:idcustomer", controllers.GetAllFactures)
 
@@ -63,16 +59,8 @@ func main() {
 	r.PUT("/api/customer/:idcustomer", controllers.UpdateCustomer)
 	r.GET("/api/facturas", controllers.GetAllFactures)
 
-	//mercado pago
-	// Ruta para crear la preferencia de pago
-	// Rutas para Mercado Pago
-	// Definir la ruta para crear la preferencia de pago
-	// Ruta para obtener los detalles del producto
-
 	r.POST("/api/payment/preference", controllers.CreatePreference)
 
-	// Configurar las rutas
-	// Ruta para enviar factura por correo
 	// Nueva ruta para enviar el correo
 	r.POST("/api/send-email", controllers.SendEmail)
 

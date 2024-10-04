@@ -8,8 +8,8 @@
         <input type="text" id="nit" v-model="nit" required>
       </div>
       <div>
-        <label for="companyName">Nombre de la Empresa:</label>
-        <input type="text" id="companyName" v-model="companyName" required>
+        <label for="Nombre">Nombre de la Empresa:</label>
+        <input type="text" id="name" v-model="name" required>
       </div>
       <div>
         <label for="address">Dirección:</label>
@@ -30,7 +30,15 @@
         <input type="password" id="password" v-model="password" required>
       </div>
 
-      <button type="submit">Registrar</button>
+      <div>
+        <button type="submit">Registrar</button>
+      </div>
+      
+      <!-- Botón Regresar -->
+      <div style="margin-top: 20px;"> <!-- Espacio entre botones -->
+        <button type="button" @click="goBack">Regresar</button>
+      </div>
+      
     </form>
   </div>
 </template>
@@ -42,7 +50,7 @@ export default {
   data() {
     return {
       nit: '',
-      companyName: '',
+      name: '',
       address: '',
       phone: '',
       email: '',
@@ -54,7 +62,7 @@ export default {
       try {
         const registrationData = {
           nit: this.nit,
-          companyName: this.companyName,
+          name: this.name,
           address: this.address,
           phone: this.phone,
           email: this.email,
@@ -67,6 +75,9 @@ export default {
         console.error('Error registrando la empresa:', error);
         alert('Hubo un error registrando la empresa');
       }
+    },
+    goBack() {
+      this.$router.go(-1); // Regresa a la página anterior (cualquiera)
     }
   }
 };
@@ -110,5 +121,3 @@ button:hover {
   background-color: #2980b9;
 }
 </style>
-
-

@@ -97,6 +97,10 @@ func CreateCompany(c *gin.Context) {
 		return
 	}
 
+	// Generar un secret_key único
+	secretKey := models.GenerateRandomHexString(32) // Genera una cadena hex con 32 bytes
+	company.SecretKey = secretKey
+
 	// Encriptar la contraseña antes de guardarla
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(company.Password), bcrypt.DefaultCost)
 	if err != nil {

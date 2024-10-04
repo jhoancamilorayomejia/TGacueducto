@@ -83,22 +83,22 @@ export default {
       this.$router.push('/api/registerCustomer');
     },
     async deleteCustomer(idcustomer) {
-      const confirmDelete = confirm("¿Estás seguro de que deseas eliminar este cliente?");
-      if (confirmDelete) {
-        try {
-          const token = localStorage.getItem('token');
-          await axios.delete(`/api/customer/${idcustomer}`, {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          });
-          this.fetchUsuarios();
-        } catch (error) {
-          console.error('Error al eliminar cliente:', error);
-          alert('Hubo un error al intentar eliminar al cliente.');
+  const confirmDelete = confirm("¿Estás seguro de que deseas eliminar el cliente?");
+  if (confirmDelete) {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`/api/customer/${idcustomer}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-      }
-    },
+      });
+      this.fetchAllFacturas(); // Cambiar fetchUsuarios a fetchAllFacturas para actualizar la lista
+    } catch (error) {
+      console.error('Error al eliminar el cliente:', error);
+      alert('Hubo un error al intentar eliminar el cliente.');
+    }
+  }
+},
     editCustomer(idcustomer) {
       this.$router.push(`/api/customer/edit/${idcustomer}`);
     },

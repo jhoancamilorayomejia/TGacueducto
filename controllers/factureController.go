@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/jhoancamilorayomejia/TGacueducto/db"
@@ -86,4 +87,19 @@ func CreateFacture(c *gin.Context) {
 		"message": "Factura creada exitosamente",
 		"facture": facture,
 	})
+}
+
+// DeleteFacture maneja la solicitud para eliminar una factura por su ID
+func DeleteFacture(c *gin.Context) {
+	idfacture := c.Param("idfacture") // Obtiene el ID de la factura desde la URL
+
+	// Ejecutar la consulta SQL para eliminar el registro
+	_, err := db.DB.Exec("DELETE FROM facture WHERE idfacture = $1", idfacture)
+	if err != nil {
+		log.Printf("Error al eliminar la factura: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "No se pudo eliminar la factura."})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Factura eliminada exitosamente."})
 }

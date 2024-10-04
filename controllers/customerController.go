@@ -190,3 +190,18 @@ func RegisterCustomer(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Cliente registrado con éxito"})
 }
+
+// DeleteFacture maneja la solicitud para eliminar una factura por su ID
+func DeleteCustomer(c *gin.Context) {
+	idcustomer := c.Param("idcustomer") // Obtiene el ID del cliente desde la URL
+
+	// Ejecutar la consulta SQL para eliminar el registro
+	_, err := db.DB.Exec("DELETE FROM customer WHERE idcustomer = $1", idcustomer)
+	if err != nil {
+		log.Printf("Error al eliminar el cliente: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "No se pudo eliminar el cliente."})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Cliente eliminado exitosamente."})
+}

@@ -41,8 +41,9 @@
             </button>
           </td>
           <td>
-            <button class="btn-delete" @click="deleteFactura(factura.idfacture)">Eliminar</button>
-          </td>
+         <button class="btn-delete" @click="deleteFacture(factura.idfacture)">Eliminar</button>
+         </td>
+
         </tr>
       </tbody>
     </table>
@@ -200,23 +201,24 @@ export default {
         query: { name, email: this.customerEmail },
       });
     },
-    async deleteFactura(idfacture) {
-      const confirmed = confirm(
-        '¿Estás seguro de que deseas eliminar esta factura?'
-      );
-      if (!confirmed) return;
+    async deleteFacture(idfacture) {
+  const confirmDelete = confirm("¿Estás seguro de que deseas eliminar la Factura?");
+  if (confirmDelete) {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`/api/facture/${idfacture}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      this.fetchAllFacturas(); // Cambiar fetchUsuarios a fetchAllFacturas para actualizar la lista
+    } catch (error) {
+      console.error('Error al eliminar factura:', error);
+      alert('Hubo un error al intentar eliminar la factura.');
+    }
+  }
+}
 
-      try {
-        await axios.delete(`/api/facturas/${idfacture}`);
-        this.facturas = this.facturas.filter(
-          (factura) => factura.idfacture !== idfacture
-        );
-        alert('Factura eliminada exitosamente.');
-      } catch (error) {
-        console.error('Error eliminando la factura:', error);
-        alert('Error al eliminar la factura.');
-      }
-    },
   },
 };
 </script>
@@ -346,3 +348,4 @@ button {
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 }
 </style>
+

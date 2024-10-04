@@ -16,7 +16,6 @@
             <th>Localidad</th>
             <th>Teléfono</th>
             <th>Email</th>
-            <th>Historial de facturas</th>
           </tr>
         </thead>
         <tbody>
