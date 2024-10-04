@@ -6,6 +6,7 @@ import (
 	//"github.com/gin-contrib/cors"
 
 	"github.com/gin-gonic/gin"
+
 	"github.com/joho/godotenv"
 
 	"github.com/jhoancamilorayomejia/TGacueducto/controllers"
@@ -69,6 +70,11 @@ func main() {
 	// Ruta para obtener los detalles del producto
 
 	r.POST("/api/payment/preference", controllers.CreatePreference)
+
+	// Configurar las rutas
+	// Ruta para enviar factura por correo
+	// Nueva ruta para enviar el correo
+	r.POST("/api/send-email", controllers.SendEmail)
 
 	err = r.Run(":8081")
 	if err != nil {

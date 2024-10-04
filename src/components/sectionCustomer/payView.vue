@@ -58,7 +58,7 @@ export default {
     initializeMercadoPago() {
       // Asegúrate de haber cargado el SDK de MercadoPago antes
       const mp = new window.MercadoPago("APP_USR-7a9253a7-699c-48df-b708-03eda8bd8845", {
-        locale: "es-AR", // Cambia esto al país que corresponda
+        locale: "es-AR", // Cambia esto al país que corresponda (falta cambiarlo)
       });
 
       // Crear el Brick para el botón de pago

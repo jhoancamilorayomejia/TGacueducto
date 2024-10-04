@@ -3,7 +3,7 @@
     <div class="invoice-header">
       <h2>Área de Gestión de Empresa</h2>
       <div class="user-info">
-        <h4>Bienvenido, {{ userName }} </h4>
+        <h4>Bienvenido, {{ userName }}</h4>
         <h5>Correo: {{ userEmail }} | NIT: {{ userNit }}</h5>
       </div>
     </div>
@@ -36,7 +36,7 @@
             <button class="btn-delete" @click="deleteCustomer(usuario.idcustomer)">Eliminar</button>
           </td>
           <td>
-            <button class="btn-info" @click="viewCustomerInfo(usuario.idcustomer, usuario.name)">Ver Información</button>
+            <button class="btn-info" @click="viewCustomerInfo(usuario.idcustomer, usuario.name, usuario.email)">Ver Información</button>
           </td>
         </tr>
       </tbody>
@@ -102,12 +102,12 @@ export default {
     editCustomer(idcustomer) {
       this.$router.push(`/api/customer/edit/${idcustomer}`);
     },
-    viewCustomerInfo(idcustomer, name) {
-  this.$router.push({
-    path: `/api/customer/info-facture/${idcustomer}`,
-    query: { name }
-  });
-}
+    viewCustomerInfo(idcustomer, name, email) {
+      this.$router.push({
+        path: `/api/customer/info-facture/${idcustomer}`,
+        query: { name, email } // Aquí pasas el email como parámetro de consulta
+      });
+    }
   }
 };
 </script>
@@ -241,5 +241,3 @@ button:hover {
   background-color: #d35400;
 }
 </style>
-
-  

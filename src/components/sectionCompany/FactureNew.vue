@@ -1,6 +1,6 @@
 <template>
   <div class="facture-new-container">
-    <h2>{{ userName }}, Nueva Factura Para {{ customerName }}</h2>
+    <h2>{{ userName }}, Nueva Factura Para {{ customerName }}, {{ customerEmail }}</h2>
     <form @submit.prevent="createFacture">
       <!-- Campo para ID de Compañía -->
       <div class="form-group">
@@ -68,6 +68,39 @@
         />
       </div>
 
+      <!-- Campo para Medidor Anterior -->
+      <div class="form-group">
+        <label for="meterbefore">Medidor Anterior</label>
+        <input 
+          type="text" 
+          v-model="facture.meterbefore" 
+          required 
+          placeholder="Ingresa la lectura anterior del medidor"
+        />
+      </div>
+
+      <!-- Campo para Medidor Actual -->
+      <div class="form-group">
+        <label for="meterafter">Medidor Actual</label>
+        <input 
+          type="text" 
+          v-model="facture.meterafter" 
+          required 
+          placeholder="Ingresa la lectura actual del medidor"
+        />
+      </div>
+
+      <!-- Campo para Consumo -->
+      <div class="form-group">
+        <label for="consumer">Consumo</label>
+        <input 
+          type="text" 
+          v-model="facture.consumer" 
+          required 
+          placeholder="Ingresa el consumo"
+        />
+      </div>
+
       <button type="submit">Crear Factura</button>
     </form>
   </div>
@@ -88,8 +121,12 @@ export default {
         datecreation: '',
         datepayment: '',
         totalpay: '', // Asegurarse de que totalpay sea un string
+        meterbefore: '', // Nuevo campo para el medidor anterior
+        meterafter: '', // Nuevo campo para el medidor actual
+        consumer: '' // Nuevo campo para el consumo
       },
-      customerName: this.$route.query.name, 
+      customerName: this.$route.query.name,
+      customerEmail: this.$route.query.email,
       userName: '', 
     };
   },
@@ -174,9 +211,6 @@ button:hover {
   background-color: #45a049;
 }
 </style>
-
-
-
 
 
   

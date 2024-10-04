@@ -30,8 +30,8 @@
           name="userType"
         >
           <option value="admin">Administrador</option>
-          <option value="company">Entidad</option>
-          <option value="customer">Cliente</option>
+          <option value="company">Entidad Prestadora de Servicio Publico</option>
+          <option value="customer">Usuario Cliente</option>
         </select>
       </div>
       <button class="login-button" @click="submitForm">Iniciar sesión</button>
