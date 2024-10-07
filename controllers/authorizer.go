@@ -30,10 +30,12 @@ func Login(c *gin.Context) {
 	var apiKey *storage.APIKey
 	var apiKeyResponse *storage.APIKeyResponse
 	var userType string
-	var userID int        // Para almacenar el ID del usuario
-	var userName string   // Para almacenar el nombre del usuario
-	var userNit string    //Para almacenar el Nit en company
-	var userCedula string //Para almacenar la cedula en customer
+	var userID int // Para almacenar el ID del usuario
+	var userFKcompany int
+	var userName string     // Para almacenar el nombre del usuario
+	var userLastName string //Para almacenar el apellido del customer
+	var userNit string      //Para almacenar el Nit en company
+	var userCedula string   //Para almacenar la cedula en customer
 
 	switch auth.UserType {
 	case "admin":
@@ -113,7 +115,9 @@ func Login(c *gin.Context) {
 
 		userType = "customer"
 		userID = customer.IDcustomer // Suponiendo que `customer` tiene un campo ID
-		userName = customer.Name     // Suponiendo que `customer` tiene un campo Nombre
+		userFKcompany = customer.IDcompany
+		userName = customer.Name // Suponiendo que `customer` tiene un campo Nombre
+		userLastName = customer.LastName
 		userCedula = customer.Cedula
 
 	default:
@@ -129,12 +133,14 @@ func Login(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"access_token": apiKeyResponse.AccessToken,
-		"userType":     userType,
-		"userID":       userID,   // ID del usuario
-		"userName":     userName, // Nombre del usuario
-		"userNit":      userNit,
-		"userCedula":   userCedula,
-		"message":      "user logged successfully",
+		"access_token":  apiKeyResponse.AccessToken,
+		"userType":      userType,
+		"userID":        userID,        // ID del usuario
+		"userFKcompany": userFKcompany, // id FK company
+		"userName":      userName,      // Nombre del usuario
+		"userLastName":  userLastName,
+		"userNit":       userNit,
+		"userCedula":    userCedula,
+		"message":       "user logged successfully",
 	})
 }

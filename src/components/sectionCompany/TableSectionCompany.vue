@@ -36,7 +36,7 @@
             <button class="btn-delete" @click="deleteCustomer(usuario.idcustomer)">Eliminar</button>
           </td>
           <td>
-            <button class="btn-info" @click="viewCustomerInfo(usuario.idcustomer, usuario.name, usuario.email)">Ver Información</button>
+            <button class="btn-info" @click="viewCustomerInfo(usuario.idcustomer, usuario.name, usuario.email, usuario.last_name, usuario.cedula)">Ver Información</button>
           </td>
         </tr>
       </tbody>
@@ -102,10 +102,10 @@ export default {
     editCustomer(idcustomer) {
       this.$router.push(`/api/customer/edit/${idcustomer}`);
     },
-    viewCustomerInfo(idcustomer, name, email) {
+    viewCustomerInfo(idcustomer, name, email, last_name, cedula) {
       this.$router.push({
         path: `/api/customer/info-facture/${idcustomer}`,
-        query: { name, email } // Aquí pasas el email como parámetro de consulta
+        query: { name, email, last_name, cedula} // Aquí pasas el email como parámetro de consulta
       });
     }
   }

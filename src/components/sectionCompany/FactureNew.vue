@@ -37,9 +37,20 @@
         />
       </div>
 
-      <!-- Campo para Fecha de Emisión -->
+      <!-- Campo para Cod. de Factura -->
       <div class="form-group">
-        <label for="datecreation">Fecha de Emisión</label>
+        <label for="codfacture">Cod. de Factura</label>
+        <input 
+          type="text" 
+          v-model="facture.codfacture" 
+          required 
+          placeholder="Ingresa el codigo de factura"
+        />
+      </div>
+
+      <!-- Periodo de comienzo de comsumo -->
+      <div class="form-group">
+        <label for="datecreation">Perido de comienzo de comsumo</label>
         <input 
           type="date" 
           v-model="facture.datecreation" 
@@ -47,12 +58,22 @@
         />
       </div>
 
-      <!-- Campo para Fecha Límite de Pago -->
+      <!-- Final de Periodo de consumo -->
       <div class="form-group">
-        <label for="datepayment">Fecha Límite de Pago</label>
+        <label for="datepayment">Final de Periodo de consumo </label>
         <input 
           type="date" 
           v-model="facture.datepayment" 
+          required 
+        />
+      </div>
+
+      <!-- Fecha limite de Pago -->
+      <div class="form-group">
+        <label for="datelimit">Fecha Limite de Pago</label>
+        <input 
+          type="date" 
+          v-model="facture.datelimit" 
           required 
         />
       </div>
@@ -118,8 +139,10 @@ export default {
         idcompany: 0, // Inicializamos idcompany como número
         idcustomer: 0, // Inicializamos idcustomer como número
         facturenumber: '',
+        codfacture: '',
         datecreation: '',
         datepayment: '',
+        datelimit: '',
         totalpay: '', // Asegurarse de que totalpay sea un string
         meterbefore: '', // Nuevo campo para el medidor anterior
         meterafter: '', // Nuevo campo para el medidor actual

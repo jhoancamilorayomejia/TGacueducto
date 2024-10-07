@@ -30,7 +30,7 @@
           name="userType"
         >
           <option value="admin">Administrador</option>
-          <option value="company">Entidad Prestadora de Servicio Publico</option>
+          <option value="company">Empresa Acueducto</option>
           <option value="customer">Usuario Cliente</option>
         </select>
       </div>
@@ -69,13 +69,15 @@ export default {
         const response = await sessionService.getSession(user);
 
         if (response.data) {
-          const { userID, access_token, userName, userNit, userCedula } = response.data;
+          const { userID, userFKcompany, access_token, userName, userNit, userCedula, userLastName } = response.data;
 
           // Guardar en localStorage
           localStorage.setItem('userID', userID);
+          localStorage.setItem('userFKcompany', userFKcompany);
           localStorage.setItem('userName', userName); // Asegúrate de que "nombre" se envía correctamente
           localStorage.setItem('userNit', userNit);
           localStorage.setItem('userCedula', userCedula);
+          localStorage.setItem('userLastName', userLastName);
           localStorage.setItem('token', access_token);
           localStorage.setItem('email', email.value);
 

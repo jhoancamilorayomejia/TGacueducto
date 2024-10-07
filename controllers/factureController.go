@@ -21,6 +21,8 @@ type Facture struct {
 	MeterBefore   string `json:"meterbefore"`
 	MeterAfter    string `json:"meterafter"`
 	Consumer      string `json:"consumer"`
+	CodFacture    string `json:"codfacture"`
+	DateLimit     string `json:"datelimit"`
 	TotalPay      string `json:"totalpay"`
 }
 
@@ -28,7 +30,7 @@ type Facture struct {
 func GetAllFactures(c *gin.Context) {
 	var facturas []Facture
 
-	rows, err := db.DB.Query("SELECT idfacture, idcompany, idcustomer, facturenumber, datecreation, datepayment, totalpay, meterbefore, meterafter, consumer FROM facture")
+	rows, err := db.DB.Query("SELECT idfacture, idcompany, idcustomer, facturenumber, datecreation, datepayment, totalpay, meterbefore, meterafter, consumer, codfacture, datelimit FROM facture")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching facturas"})
 		return
@@ -37,7 +39,7 @@ func GetAllFactures(c *gin.Context) {
 
 	for rows.Next() {
 		var factura Facture
-		err := rows.Scan(&factura.IDfacture, &factura.IDcompany, &factura.IDcustomer, &factura.FactureNumber, &factura.DateCreation, &factura.DatePayment, &factura.TotalPay, &factura.MeterBefore, &factura.MeterAfter, &factura.Consumer)
+		err := rows.Scan(&factura.IDfacture, &factura.IDcompany, &factura.IDcustomer, &factura.FactureNumber, &factura.DateCreation, &factura.DatePayment, &factura.TotalPay, &factura.MeterBefore, &factura.MeterAfter, &factura.Consumer, &factura.CodFacture, &factura.DateLimit)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error scanning factura"})
 			return
@@ -68,14 +70,16 @@ func CreateFacture(c *gin.Context) {
 		MeterBefore:   input.MeterBefore,
 		MeterAfter:    input.MeterAfter,
 		Consumer:      input.Consumer,
+		CodFacture:    input.CodFacture,
+		DateLimit:     input.DateLimit,
 		TotalPay:      input.TotalPay,
 	}
 
 	// Insertar la nueva factura en la base de datos, incluyendo las nuevas columnas
-	query := `INSERT INTO facture (idcompany, idcustomer, facturenumber, datecreation, datepayment, meterbefore, meterafter, consumer, totalpay)
-              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING idfacture`
+	query := `INSERT INTO facture (idcompany, idcustomer, facturenumber, datecreation, datepayment, meterbefore, meterafter, consumer, codfacture, datelimit, totalpay)
+              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING idfacture`
 
-	err := db.DB.QueryRow(query, facture.IDcompany, facture.IDcustomer, facture.FactureNumber, facture.DateCreation, facture.DatePayment, facture.MeterBefore, facture.MeterAfter, facture.Consumer, facture.TotalPay).Scan(&facture.IDfacture)
+	err := db.DB.QueryRow(query, facture.IDcompany, facture.IDcustomer, facture.FactureNumber, facture.DateCreation, facture.DatePayment, facture.MeterBefore, facture.MeterAfter, facture.Consumer, facture.CodFacture, facture.DateLimit, facture.TotalPay).Scan(&facture.IDfacture)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al crear la factura"})

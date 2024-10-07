@@ -23,7 +23,7 @@ func CreatePreference(c *gin.Context) {
 	}
 
 	// Configurar SDK de Mercado Pago
-	cfg, err := config.New("APP_USR-2968715667719509-092709-bc6fc120e3c1d5e387a2f103c9678bf9-2007177437") // Reemplaza con tu Access Token de Mercado Pago
+	cfg, err := config.New("APP_USR-2877031606482659-100419-b3d37070db91f99a4971fe85f8b0171e-2007177437") // Reemplaza con tu Access Token de Mercado Pago
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Configuration error"})
@@ -36,7 +36,7 @@ func CreatePreference(c *gin.Context) {
 	request := preference.Request{
 		Items: []preference.ItemRequest{
 			{
-				Title:     "Pago de Servicio",
+				Title:     "Pago de Servicio Acueducto",
 				Quantity:  1,
 				UnitPrice: requestData.Amount,
 			},

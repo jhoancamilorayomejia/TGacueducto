@@ -2,6 +2,7 @@
   <div class="receipt-container">
     <h1 class="receipt-title">Recibo de Pago</h1>
     <div class="receipt-details">
+      <h4>Referencia de Pago: {{ FactureCod }}</h4>
       <p class="total-label">Monto Total:</p>
       <p class="total-amount">${{ totalPay.toFixed(2) }}</p>
     </div>
@@ -20,6 +21,7 @@ export default {
   data() {
     return {
       totalPay: 0.0, // Inicializa el valor
+      FactureCod : this.$route.query.codfacture,
       preferenceId: "" // Almacenar el ID de la preferencia generada
     };
   },
@@ -57,8 +59,8 @@ export default {
     },
     initializeMercadoPago() {
       // Asegúrate de haber cargado el SDK de MercadoPago antes
-      const mp = new window.MercadoPago("APP_USR-7a9253a7-699c-48df-b708-03eda8bd8845", {
-        locale: "es-AR", // Cambia esto al país que corresponda (falta cambiarlo)
+      const mp = new window.MercadoPago("APP_USR-7bf75337-d896-48f0-ae16-ab08fe26882f", {
+        locale: "es-CO", // Cambia esto al país que corresponda (falta cambiarlo)
       });
 
       // Crear el Brick para el botón de pago

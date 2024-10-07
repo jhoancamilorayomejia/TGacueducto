@@ -10,6 +10,8 @@ type Facture struct {
 	MeterBefore   string `json:"meterbefore"`
 	MeterAfter    string `json:"meterafter"`
 	Consumer      string `json:"consumer"`
+	CodFacture    string `json:"codfacture"`
+	DateLimit     string `json:"datelimit"`
 	TotalPay      string `json:"totalpay"`
 	CustomerEmail string `json:"customerEmail"` // Nuevo campo agregado
 }

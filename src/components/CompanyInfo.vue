@@ -1,7 +1,8 @@
 <template>
   <div class="invoice-container">
     <div class="invoice-header">
-      <h2>Información de la Empresa: {{ $route.params.idcompany }} - {{ $route.query.name }}</h2>
+      <h2>Información de la Empresa: - {{ $route.query.name }}</h2>
+      <!--h5>{{ $route.params.idcompany }}</h5-->
     </div>
     <!-- Tabla de clientes -->
     <div class="customer-table">
@@ -9,7 +10,7 @@
       <table>
         <thead>
           <tr>
-            <th>ID de la Empresa</th>
+            <!--th>ID de la Empresa</th-->
             <th>Cedula</th>
             <th>Nombre</th>
             <th>Apellido</th>
@@ -20,7 +21,7 @@
         </thead>
         <tbody>
           <tr v-for="usuario in usuarios" :key="usuario.idcustomer">
-            <td>{{ usuario.idcompany }}</td>
+            <!--td>{{ usuario.idcompany }}</td-->
             <td>{{ usuario.cedula }}</td>
             <td>{{ usuario.name }}</td>
             <td>{{ usuario.last_name }}</td>

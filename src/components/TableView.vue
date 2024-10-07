@@ -4,7 +4,8 @@
       <h2>Área de Administrador</h2>
       
       <div class="user-info">
-        <h4>Bienvenido, {{ userName }} - ID: {{ userID }}</h4>
+        <h4>Bienvenido, {{ userName }} </h4>
+        <!--h5>ID: {{ userID }}</h5-->
       </div>
       <!--h5>Bienvenido, {{ userEmail }} con ID: {{ userID }} nombre: {{ userName }}</h5-->
     </div>
