@@ -52,6 +52,7 @@ func main() {
 	r.POST("/api/facturas", controllers.CreateFacture)
 	r.DELETE("/api/facture/:idfacture", controllers.DeleteFacture)
 	r.DELETE("/api/customer/:idcustomer", controllers.DeleteCustomer)
+	r.PUT("/api/facturas/:idfacture", controllers.UpdateFacture)
 
 	r.GET("/api/facturas/:idcustomer", controllers.GetAllFactures)
 

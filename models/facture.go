@@ -12,6 +12,7 @@ type Facture struct {
 	Consumer      string `json:"consumer"`
 	CodFacture    string `json:"codfacture"`
 	DateLimit     string `json:"datelimit"`
+	StatusFacture string `json:"statusfacture"`
 	TotalPay      string `json:"totalpay"`
 	CustomerEmail string `json:"customerEmail"` // Nuevo campo agregado
 }

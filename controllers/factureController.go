@@ -23,6 +23,7 @@ type Facture struct {
 	Consumer      string `json:"consumer"`
 	CodFacture    string `json:"codfacture"`
 	DateLimit     string `json:"datelimit"`
+	StatusFacture string `json:"statusfacture"`
 	TotalPay      string `json:"totalpay"`
 }
 
@@ -30,7 +31,7 @@ type Facture struct {
 func GetAllFactures(c *gin.Context) {
 	var facturas []Facture
 
-	rows, err := db.DB.Query("SELECT idfacture, idcompany, idcustomer, facturenumber, datecreation, datepayment, totalpay, meterbefore, meterafter, consumer, codfacture, datelimit FROM facture")
+	rows, err := db.DB.Query("SELECT idfacture, idcompany, idcustomer, facturenumber, datecreation, datepayment, totalpay, meterbefore, meterafter, consumer, codfacture, datelimit, statusfacture FROM facture")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching facturas"})
 		return
@@ -39,7 +40,7 @@ func GetAllFactures(c *gin.Context) {
 
 	for rows.Next() {
 		var factura Facture
-		err := rows.Scan(&factura.IDfacture, &factura.IDcompany, &factura.IDcustomer, &factura.FactureNumber, &factura.DateCreation, &factura.DatePayment, &factura.TotalPay, &factura.MeterBefore, &factura.MeterAfter, &factura.Consumer, &factura.CodFacture, &factura.DateLimit)
+		err := rows.Scan(&factura.IDfacture, &factura.IDcompany, &factura.IDcustomer, &factura.FactureNumber, &factura.DateCreation, &factura.DatePayment, &factura.TotalPay, &factura.MeterBefore, &factura.MeterAfter, &factura.Consumer, &factura.CodFacture, &factura.DateLimit, &factura.StatusFacture)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error scanning factura"})
 			return
@@ -60,6 +61,8 @@ func CreateFacture(c *gin.Context) {
 		return
 	}
 
+	statusFacture := "Pendiente"
+
 	// Crear una nueva instancia del modelo Facture (ajusta según el nombre de tu modelo)
 	facture := models.Facture{
 		IDcompany:     input.IDcompany,
@@ -72,14 +75,15 @@ func CreateFacture(c *gin.Context) {
 		Consumer:      input.Consumer,
 		CodFacture:    input.CodFacture,
 		DateLimit:     input.DateLimit,
-		TotalPay:      input.TotalPay,
+		StatusFacture: statusFacture,
+		TotalPay:      input.TotalPay, // El campo 'statusfacture' no se está asignando aquí
 	}
 
 	// Insertar la nueva factura en la base de datos, incluyendo las nuevas columnas
-	query := `INSERT INTO facture (idcompany, idcustomer, facturenumber, datecreation, datepayment, meterbefore, meterafter, consumer, codfacture, datelimit, totalpay)
-              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING idfacture`
+	query := `INSERT INTO facture (idcompany, idcustomer, facturenumber, datecreation, datepayment, meterbefore, meterafter, consumer, codfacture, datelimit, statusfacture, totalpay)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING idfacture`
 
-	err := db.DB.QueryRow(query, facture.IDcompany, facture.IDcustomer, facture.FactureNumber, facture.DateCreation, facture.DatePayment, facture.MeterBefore, facture.MeterAfter, facture.Consumer, facture.CodFacture, facture.DateLimit, facture.TotalPay).Scan(&facture.IDfacture)
+	err := db.DB.QueryRow(query, facture.IDcompany, facture.IDcustomer, facture.FactureNumber, facture.DateCreation, facture.DatePayment, facture.MeterBefore, facture.MeterAfter, facture.Consumer, facture.CodFacture, facture.DateLimit, facture.StatusFacture, facture.TotalPay).Scan(&facture.IDfacture)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al crear la factura"})
@@ -106,4 +110,32 @@ func DeleteFacture(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Factura eliminada exitosamente."})
+}
+
+// UpdateFacture actualiza el campo statusfacture de una factura
+func UpdateFacture(c *gin.Context) {
+	// Obtener el ID de la factura de la URL
+	idfacture := c.Param("idfacture")
+
+	// Estructura para recibir el nuevo estado de la factura
+	type UpdateStatus struct {
+		StatusFacture string `json:"statusfacture"`
+	}
+
+	var statusUpdate UpdateStatus
+
+	// Bindear el JSON recibido al struct
+	if err := c.ShouldBindJSON(&statusUpdate); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos"})
+		return
+	}
+
+	// Actualizar el estado de la factura en la base de datos
+	_, err := db.DB.Exec("UPDATE facture SET statusfacture = $1 WHERE idfacture = $2", statusUpdate.StatusFacture, idfacture)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "No se pudo actualizar la factura"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Factura actualizada correctamente"})
 }

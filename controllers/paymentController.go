@@ -37,7 +37,7 @@ func CreatePreference(c *gin.Context) {
 	request := preference.Request{
 		Items: []preference.ItemRequest{
 			{
-				Title:     fmt.Sprintf("Pago de Servicio Acueducto - Factura: %s", requestData.FactureCod),
+				Title:     fmt.Sprintf("Pago de Servicio Acueducto - Referencia de Pago: %s ", requestData.FactureCod),
 				Quantity:  1,
 				UnitPrice: requestData.Amount,
 				//Description: fmt.Sprintf("Pago de Servicio - Factura: %s", requestData.FactureCod),

@@ -20,6 +20,7 @@
           <th>Final de Periodo</th>
           <th>Fecha limite de Pago</th>
           <th>Total a Pagar</th>
+          <th>Estado</th>
           <th>Factura PDF</th>
           <th>Enviar por Correo</th> <!-- Nueva columna -->
           <th>Acciones</th>
@@ -36,6 +37,13 @@
           <td>{{ factura.datepayment }}</td>
           <td>{{ factura.datelimit }}</td>
           <td>${{ factura.totalpay }}</td>
+          <td>
+           <select v-model="factura.statusfacture" @change="updateFactureStatus(factura)" class="form-select">
+           <option value="Pendiente">Pendiente</option>
+           <option value="Pagada">Pagada</option>
+           <option value="Vencida">Vencida</option>
+          </select>
+          </td>
           <td>
             <button @click="downloadInvoice(factura)" class="download-button">
               <i class="fas fa-download"></i> Descargar
@@ -101,6 +109,18 @@ export default {
       } catch (error) {
         console.error('Error fetching facturas:', error);
         alert('Error al obtener las facturas.');
+      }
+    },
+
+    async updateFactureStatus(factura) {
+      try {
+        await axios.put(`/api/facturas/${factura.idfacture}`, {
+          statusfacture: factura.statusfacture,
+        });
+        alert('Estado de la factura actualizado.');
+      } catch (error) {
+        console.error('Error updating facture status:', error);
+        alert('Error al actualizar el estado de la factura.');
       }
     },
     downloadInvoice(factura) {
@@ -460,6 +480,23 @@ button {
   text-align: center;
   font-size: 1.2em;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.form-select {
+  width: 150px; /* Ajusta el ancho según sea necesario */
+  border-radius: 5px;
+  background-color: #f8f9fa; /* Color de fondo claro */
+  border: 1px solid #ced4da; /* Color del borde */
+  transition: border-color 0.2s ease-in-out;
+}
+
+.form-select:hover {
+  border-color: #80bdff; /* Cambia el color del borde al pasar el mouse */
+}
+
+.form-select:focus {
+  border-color: #0056b3; /* Color del borde al hacer foco */
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Sombra al hacer foco */
 }
 </style>
 

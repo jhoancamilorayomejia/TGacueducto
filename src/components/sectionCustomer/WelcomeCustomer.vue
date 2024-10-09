@@ -17,7 +17,7 @@
           <th>Final de Periodo</th>
           <th>Fecha Límite de Pago</th>
           <th>Monto Total</th>
-          <!--th>Estado</th-->
+          <th>Estado</th>
           <th>Factura PDF</th>
           <th>Proceso de Pago</th> <!-- Nueva columna -->
         </tr>
@@ -33,6 +33,7 @@
           <td>{{ factura.datepayment }}</td>
           <td>{{ factura.datelimit }}</td>
           <td>${{ factura.totalpay }}</td>
+          <td>{{ factura.statusfacture }}</td>
           <!--td>Pendiente/Pagado</td-->
           <td>
             <button @click="downloadInvoice(factura, companies[0])" class="download-button">
@@ -40,7 +41,12 @@
             </button>
           </td>
           <td>
-            <button @click="goToPayment(factura.totalpay, factura.codfacture)" class="payment-button">
+            <button
+              @click="goToPayment(factura.totalpay, factura.codfacture)"
+              class="payment-button"
+              :class="{ 'paid': factura.statusfacture === 'Pagada' || factura.statusfacture === 'Vencida' }"
+              :disabled="factura.statusfacture === 'Pagada' || factura.statusfacture === 'Vencida'"
+            >
               Proceso de pago
             </button>
           </td>
@@ -288,8 +294,13 @@ th, td {
   cursor: pointer;
 }
 
-.payment-button:hover {
-  background-color: #45a049; /* Color verde más oscuro al pasar el ratón */
+.payment-button.paid {
+  background-color: gray; /* Cambiar a gris cuando esté "Pagada" */
+}
+
+.payment-button:disabled {
+  cursor: not-allowed; /* Cambiar cursor cuando está deshabilitado */
+  opacity: 0.6; /* Añadir opacidad cuando está deshabilitado */
 }
 </style>
 
