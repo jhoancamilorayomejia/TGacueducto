@@ -21,7 +21,7 @@ export default {
   data() {
     return {
       totalPay: 0.0, // Inicializa el valor
-      FactureCod : this.$route.query.codfacture,
+      FactureCod: this.$route.query.codfacture || '',
       preferenceId: "" // Almacenar el ID de la preferencia generada
     };
   },
@@ -46,7 +46,9 @@ export default {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ amount: amount }),
+        body: JSON.stringify({ amount: amount,
+          FactureCod: this.FactureCod
+         }),
       })
         .then((response) => response.json())
         .then((data) => {

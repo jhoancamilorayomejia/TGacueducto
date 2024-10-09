@@ -14,7 +14,8 @@ import (
 func CreatePreference(c *gin.Context) {
 	// Cargar datos enviados desde el frontend
 	var requestData struct {
-		Amount float64 `json:"amount"`
+		Amount     float64 `json:"amount"`
+		FactureCod string  `json:"FactureCod"`
 	}
 
 	if err := c.ShouldBindJSON(&requestData); err != nil {
@@ -36,9 +37,10 @@ func CreatePreference(c *gin.Context) {
 	request := preference.Request{
 		Items: []preference.ItemRequest{
 			{
-				Title:     "Pago de Servicio Acueducto",
+				Title:     fmt.Sprintf("Pago de Servicio Acueducto - Factura: %s", requestData.FactureCod),
 				Quantity:  1,
 				UnitPrice: requestData.Amount,
+				//Description: fmt.Sprintf("Pago de Servicio - Factura: %s", requestData.FactureCod),
 			},
 		},
 		BackURLs: &preference.BackURLsRequest{
