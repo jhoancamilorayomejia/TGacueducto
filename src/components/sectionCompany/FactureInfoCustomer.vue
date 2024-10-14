@@ -7,6 +7,7 @@
     <!--h5>ID: {{ customerId }} </h5-->
     <div class="invoice-buttons">
       <button @click="viewFactureNew(customerId, customerName)">Nueva factura</button>
+      <button type="button" @click="goBack">Regresar</button>
     </div>
     <table>
       <thead>
@@ -61,7 +62,6 @@
         </tr>
       </tbody>
     </table>
-
     <!-- Modal de Carga (Opcional) -->
     <div v-if="sendingEmail" class="modal-overlay">
       <div class="modal-content">
@@ -123,171 +123,210 @@ export default {
         alert('Error al actualizar el estado de la factura.');
       }
     },
-    downloadInvoice(factura) {
-      const doc = new jsPDF();
-      
-      // Configuración de fuentes y estilos
-      doc.setFont('Courier', 'normal');
-
-      // Encabezado
-      doc.setFontSize(22);
-      doc.setTextColor(0, 0, 0); // Negro
-      doc.text(`Empresa acueducto,${this.userName}`, 130, 20, null, null, 'center'); // Nombre de la empresa centrado
-      
-      // Línea divisoria en color azul agua
-      doc.setDrawColor(0, 102, 102); // Establecer el color de la línea a azul agua
-      doc.setLineWidth(2);//gruesor
-      doc.line(205, 25, 25, 25);
-
-      // Titulo
-      doc.setFontSize(15);
-      doc.setTextColor(0);
-      doc.text('Factura de Agua', 30, 10, null, null, 'center');
-
-      // Título de la factura en negrita
-      doc.setFont('Courier', 'bold');
-      doc.setFontSize(11);
-      doc.text(`Pago de Referencia: #${factura.codfacture}`, 170, 10, 'center');
-
-      // Configuración de fuentes y estilos
-      doc.setFont('Courier', 'normal');
-
-      //Info de Empresa
-      doc.setFontSize(8);
-      doc.text(`NIT:${this.userNit}, Correo:${this.userEmail}`, 120, 30);
-      //doc.text(`Correo:${this.userEmail}`, 159, 30);
 
 
-      // Datos del cliente
-      doc.setFontSize(12);
-      doc.setTextColor(50); // Color gris para datos del cliente
-      doc.text('INFORMACIÓN GENERAL', 10, 45);
+    // Función auxiliar para convertir una imagen a base64 con opacidad ajustable
+    getImageDataUrl(url, opacity = 1) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.setAttribute('crossOrigin', 'anonymous'); // Evita problemas de CORS
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext('2d');
 
-      doc.setTextColor(0); // Restablecer el color a negro
-      doc.text(`Factura Número: ${factura.facturenumber}`, 10, 50);
-      doc.text(`Fecha Límite de Pago: ${factura.datelimit}`, 10, 55);
+          // Establecer la opacidad
+          ctx.globalAlpha = opacity;
 
-      doc.setTextColor(50); // Color gris para datos del cliente
-      doc.text('Datos del Cliente', 129, 45, 'center');
+          // Dibujar la imagen con la opacidad establecida
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-      doc.setTextColor(0); // Restablecer el color a negro
-      doc.text(`Nombre: ${this.customerName} ${this.customerLastName}`, 108, 50);
-      //doc.text(`${this.customerLastName}`, 170, 50);
-      doc.text(`N° Cedula: ${this.customerCedula}`, 108, 55);
-      
-
-      // Línea divisoria en color azul agua
-      doc.setDrawColor(0, 102, 102); // Establecer el color de la línea a azul agua
-      doc.setLineWidth(0.5);//gruesor
-      doc.line(205, 65, 65, 65);
-
-      doc.setTextColor(50); // Color gris para datos del cliente
-      doc.text('Historial de consumo', 36, 75, 'center');
-      
-      doc.setTextColor(0); // Restablecer el color a negro
-      doc.text('Se establece un consumo de ', 10, 80);
-      doc.setFont('Courier', 'bold');
-      doc.text(`${factura.consumer}`, 78, 80);
-      doc.setFont('Courier', 'normal');
-      doc.text('Mt3 a partir del proceso de calcular:', 85, 80);
-      doc.text(`(Lectura actual: ${factura.meterafter}) - (Lectura anterior: ${factura.meterbefore}),Para un periodo comprendido`, 10, 85);
-      doc.text(`entre el ${factura.datecreation} y ${factura.datepayment}. Como observacion se tiene NORMAL con el`, 10, 90);
-      doc.text(`metodo de calculo DIFERENCIA LECTURAS`, 10, 95);
-      
-      doc.setFont('Courier', 'bold');
-      doc.text('TOTALES DE COBRO', 30, 115, 'center');
-
-      doc.setFont('Courier', 'normal');
-      doc.text(`Total del mes: $${factura.totalpay}`, 10, 120);
-      //doc.text(`Cliente: ${this.customerName} (ID: ${this.customerId})`,10,125);
-
-      //doc.text(`ID: ${this.customerId}`, 10, 75);
-      
-      doc.save(`Factura_${factura.facturenumber}.pdf`);
-
-     
-      
-      
-
+          // Convertir el contenido del canvas a Data URL
+          const dataURL = canvas.toDataURL('image/png');
+          resolve(dataURL);
+        };
+        img.onerror = (error) => reject(error);
+        img.src = url;
+      });
     },
+
+    async downloadInvoice(factura) {
+      try {
+        const doc = new jsPDF();
+
+        // Obtener la imagen de fondo con opacidad 0.2
+        const backgroundUrl = '/img/logoTG.png'; // Ruta relativa desde la carpeta public
+        const background = await this.getImageDataUrl(backgroundUrl, 0.2); // 0.2 = 20% opacidad
+
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+
+        // Añadir la imagen de fondo al PDF
+        doc.addImage(background, 'PNG', 0, 0, pageWidth, pageHeight);
+
+        // Ahora, agregar el contenido sobre la imagen de fondo
+        // Configuración de fuentes y estilos
+        doc.setFont('Courier', 'normal');
+
+        // Encabezado
+        doc.setFontSize(22);
+        doc.setTextColor(0, 0, 0); // Negro
+        doc.text(`Empresa Acueducto, ${this.userName}`, pageWidth / 2, 20, { align: 'center' }); // Nombre de la empresa centrado
+
+        // Línea divisoria en color azul agua
+        doc.setDrawColor(0, 102, 102); // Establecer el color de la línea a azul agua
+        doc.setLineWidth(2);//gruesor
+        doc.line(205, 25, 25, 25);
+
+        doc.setFontSize(15);
+        doc.setTextColor(0);
+        doc.text('Factura de Agua', 30, 10, null, null, 'center');
+
+        // Título de la factura en negrita
+        doc.setFont('Courier', 'bold');
+        doc.setFontSize(11);
+        doc.text(`Pago de Referencia: #${factura.codfacture}`, pageWidth - 30, 10, { align: 'right' });
+
+        // Info de Empresa
+        doc.setFont('Courier', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(0);
+        doc.text(`NIT: ${this.userNit}, Correo: ${this.userEmail}`, 120, 30);
+
+        // Datos del cliente
+        doc.setFontSize(12);
+        doc.setTextColor(50); // Gris
+        doc.text('INFORMACIÓN GENERAL', 10, 45);
+
+        doc.setTextColor(0); // Negro
+        doc.text(`Factura Número: ${factura.facturenumber}`, 10, 50);
+        doc.text(`Fecha Límite de Pago: ${factura.datelimit}`, 10, 55);
+
+        doc.setTextColor(50); // Gris
+        doc.text('Datos del Cliente', pageWidth - 88, 45, { align: 'center' });
+
+        doc.setTextColor(0); // Negro
+        doc.text(`Nombre: ${this.customerName} ${this.customerLastName}`, 100, 50);
+        doc.text(`N° Cedula: ${this.customerCedula}`, 100, 55);
+
+        // Línea divisoria en color azul agua
+        doc.setDrawColor(0, 102, 102); // Establecer el color de la línea a azul agua
+        doc.setLineWidth(0.5);//gruesor
+        doc.line(205, 65, 65, 65);
+
+        // Historial de consumo
+        doc.setTextColor(50); // Gris
+        doc.text('Historial de consumo', pageWidth / 2, 75, { align: 'center' });
+
+        doc.setTextColor(0); // Restablecer el color a negro
+        doc.text('Se establece un consumo de ', 10, 80);
+        doc.setFont('Courier', 'bold');
+        doc.text(`${factura.consumer}`, 78, 80);
+        doc.setFont('Courier', 'normal');
+        doc.text('Mt3 a partir del proceso de calcular:', 85, 80);
+        doc.text(`(Lectura actual: ${factura.meterafter}) - (Lectura anterior: ${factura.meterbefore}),Para un periodo comprendido`, 10, 85);
+        doc.text(`entre el ${factura.datecreation} y ${factura.datepayment}. Como observacion se tiene NORMAL con el`, 10, 90);
+        doc.text(`metodo de calculo DIFERENCIA LECTURAS`, 10, 95);
+
+        doc.setFont('Courier', 'bold');
+        doc.text('TOTALES DE COBRO', 30, 115, 'center');
+
+        doc.setFont('Courier', 'normal');
+        doc.text(`Total del mes: $${factura.totalpay}`, 10, 120);
+
+        // Guardar el PDF
+        doc.save(`Factura_${factura.facturenumber}.pdf`);
+      } catch (error) {
+        console.error('Error generando el PDF:', error);
+        alert('Hubo un error al generar la factura.');
+      }
+    },
+
     async sendInvoiceByEmail(factura) {
       this.sendingEmail = true; // Iniciar indicador de carga
       try {
-        // Generar el PDF
         const doc = new jsPDF();
+
+        // Obtener la imagen de fondo con opacidad 0.2
+        const backgroundUrl = '/img/logoTG.png'; // Ruta relativa desde la carpeta public
+        const background = await this.getImageDataUrl(backgroundUrl, 0.2); // 0.2 = 20% opacidad
+
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+
+        // Añadir la imagen de fondo al PDF
+        doc.addImage(background, 'PNG', 0, 0, pageWidth, pageHeight);
+
+        // Ahora, agregar el contenido sobre la imagen de fondo
         // Configuración de fuentes y estilos
-      doc.setFont('Courier', 'normal');
+        doc.setFont('Courier', 'normal');
 
-// Encabezado
-doc.setFontSize(25);
-doc.setTextColor(0, 0, 0); // Negro
-doc.text(`Empresa acueducto,${this.userName}`, 130, 20, null, null, 'center'); // Nombre de la empresa centrado
+        // Encabezado
+        doc.setFontSize(22);
+        doc.setTextColor(0, 0, 0); // Negro
+        doc.text(`Empresa Acueducto, ${this.userName}`, pageWidth / 2, 20, { align: 'center' }); // Nombre de la empresa centrado
 
-// Línea divisoria en color azul agua
-doc.setDrawColor(0, 102, 102); // Establecer el color de la línea a azul agua
-doc.setLineWidth(2);//gruesor
-doc.line(205, 25, 25, 25);
+        // Línea divisoria en color azul agua
+        doc.setDrawColor(0, 102, 102); // Establecer el color de la línea a azul agua
+        doc.setLineWidth(2);//gruesor
+        doc.line(205, 25, 25, 25);
 
-// Titulo
-doc.setFontSize(15);
-doc.setTextColor(0);
-doc.text('Factura de Agua', 30, 10, null, null, 'center');
+        doc.setFontSize(15);
+        doc.setTextColor(0);
+        doc.text('Factura de Agua', 30, 10, null, null, 'center');
 
-// Título de la factura en negrita
-doc.setFont('Courier', 'bold');
-doc.setFontSize(11);
-doc.text(`Pago de Referencia: #${factura.codfacture}`, 170, 10, 'center');
+        // Título de la factura en negrita
+        doc.setFont('Courier', 'bold');
+        doc.setFontSize(11);
+        doc.text(`Pago de Referencia: #${factura.codfacture}`, pageWidth - 30, 10, { align: 'right' });
 
-// Configuración de fuentes y estilos
-doc.setFont('Courier', 'normal');
+        // Info de Empresa
+        doc.setFont('Courier', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(0);
+        doc.text(`NIT: ${this.userNit}, Correo: ${this.userEmail}`, 120, 30);
 
-//Info de Empresa
-doc.setFontSize(8);
-doc.text(`NIT:${this.userNit}, Correo:${this.userEmail}`, 120, 30);
-//doc.text(`Correo: ${this.userEmail}`, 160, 30);
+        // Datos del cliente
+        doc.setFontSize(12);
+        doc.setTextColor(50); // Gris
+        doc.text('INFORMACIÓN GENERAL', 10, 45);
 
+        doc.setTextColor(0); // Negro
+        doc.text(`Factura Número: ${factura.facturenumber}`, 10, 50);
+        doc.text(`Fecha Límite de Pago: ${factura.datelimit}`, 10, 55);
 
-// Datos del cliente
-doc.setFontSize(12);
-doc.setTextColor(50); // Color gris para datos del cliente
-doc.text('INFORMACIÓN GENERAL', 10, 45);
+        doc.setTextColor(50); // Gris
+        doc.text('Datos del Cliente', pageWidth - 88, 45, { align: 'center' });
 
-doc.setTextColor(0); // Restablecer el color a negro
-doc.text(`Factura Número: ${factura.facturenumber}`, 10, 50);
-doc.text(`Fecha Límite de Pago: ${factura.datelimit}`, 10, 55);
+        doc.setTextColor(0); // Negro
+        doc.text(`Nombre: ${this.customerName} ${this.customerLastName}`, 100, 50);
+        doc.text(`N° Cedula: ${this.customerCedula}`, 100, 55);
 
-doc.setTextColor(50); // Color gris para datos del cliente
-doc.text('Datos del Cliente', 129, 45, 'center');
+        // Línea divisoria en color azul agua
+        doc.setDrawColor(0, 102, 102); // Establecer el color de la línea a azul agua
+        doc.setLineWidth(0.5);//gruesor
+        doc.line(205, 65, 65, 65);
 
-doc.setTextColor(0); // Restablecer el color a negro
-doc.text(`Nombre: ${this.customerName} ${this.customerLastName}`, 108, 50);
-//doc.text(`${this.customerLastName}`, 170, 50);
-doc.text(`N° Cedula: ${this.customerCedula}`, 108, 55);
+        // Historial de consumo
+        doc.setTextColor(50); // Gris
+        doc.text('Historial de consumo', pageWidth / 2, 75, { align: 'center' });
 
+        doc.setTextColor(0); // Restablecer el color a negro
+        doc.text('Se establece un consumo de ', 10, 80);
+        doc.setFont('Courier', 'bold');
+        doc.text(`${factura.consumer}`, 78, 80);
+        doc.setFont('Courier', 'normal');
+        doc.text('Mt3 a partir del proceso de calcular:', 85, 80);
+        doc.text(`(Lectura actual: ${factura.meterafter}) - (Lectura anterior: ${factura.meterbefore}),Para un periodo comprendido`, 10, 85);
+        doc.text(`entre el ${factura.datecreation} y ${factura.datepayment}. Como observacion se tiene NORMAL con el`, 10, 90);
+        doc.text(`metodo de calculo DIFERENCIA LECTURAS`, 10, 95);
 
-// Línea divisoria en color azul agua
-doc.setDrawColor(0, 102, 102); // Establecer el color de la línea a azul agua
-doc.setLineWidth(0.5);//gruesor
-doc.line(205, 65, 65, 65);
+        doc.setFont('Courier', 'bold');
+        doc.text('TOTALES DE COBRO', 30, 115, 'center');
 
-doc.setTextColor(50); // Color gris para datos del cliente
-doc.text('Historial de consumo', 36, 75, 'center');
-
-doc.setTextColor(0); // Restablecer el color a negro
-doc.text('Se establece un consumo de ', 10, 80);
-doc.setFont('Courier', 'bold');
-doc.text(`${factura.consumer}`, 78, 80);
-doc.setFont('Courier', 'normal');
-doc.text('Mt3 a partir del proceso de calcular:', 85, 80);
-doc.text(`(Lectura actual: ${factura.meterafter}) - (Lectura anterior: ${factura.meterbefore}),Para un periodo comprendido`, 10, 85);
-doc.text(`entre el ${factura.datecreation} y ${factura.datepayment}. Como observacion se tiene NORMAL con el`, 10, 90);
-doc.text(`metodo de calculo DIFERENCIA LECTURAS`, 10, 95);
-
-doc.setFont('Courier', 'bold');
-doc.text('TOTALES DE COBRO', 30, 115, 'center');
-
-doc.setFont('Courier', 'normal');
-doc.text(`Total del mes: $${factura.totalpay}`, 10, 120);
+        doc.setFont('Courier', 'normal');
+        doc.text(`Total del mes: $${factura.totalpay}`, 10, 120);
 
         // Obtener el PDF como Blob
         const pdfBlob = doc.output('blob');
@@ -351,7 +390,10 @@ doc.text(`Total del mes: $${factura.totalpay}`, 10, 120);
       alert('Hubo un error al intentar eliminar la factura.');
     }
   }
-}
+},
+goBack() {
+      this.$router.go(-1); // Regresa a la página anterior (cualquiera)
+    }
 
   },
 };

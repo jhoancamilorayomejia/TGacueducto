@@ -1,6 +1,7 @@
 <template>
   <div class="login-container">
     <div class="login-form">
+      <img src="/img/logoblack.png" alt="Logo" class="logo-image" />
       <h2>Login</h2>
       <div class="input-container">
         <input
@@ -122,9 +123,6 @@ export default {
 
 
 
-
-
-
 <style scoped>
 body {
   margin: 0;
@@ -150,7 +148,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: linear-gradient(90deg, #00BFFF  0%, #000000 100%); /* Fondo negro semitransparente */
+  background: linear-gradient(90deg, #00BFFF  0%, #000000 80%); /* Fondo negro semitransparente */
   padding: 40px;
   border-radius: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -223,4 +221,18 @@ body {
   background: rgba(0, 0, 0, 0.6); /* Degradado oscuro */
   z-index: 0;
 }
+
+.logo-image {
+  position: absolute;
+  top: 1.5px;
+  right: 10px;
+  width: 75px;
+  height: auto;
+  z-index: 2; /* Asegura que esté sobre el formulario */
+}
+
+.login-form {
+  position: relative; /* Esto es necesario para que la posición absoluta del logo funcione correctamente */
+}
+
 </style>

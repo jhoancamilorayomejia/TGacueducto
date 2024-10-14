@@ -28,7 +28,7 @@
           <td>{{ factura.meterbefore }}</td>
           <td>{{ factura.meterafter }}</td>
           <td>{{ factura.consumer }}</td>
-          <td>{{ factura.codfacture }} </td>
+          <td>{{ factura.codfacture }}</td>
           <td>{{ factura.datecreation }}</td>
           <td>{{ factura.datepayment }}</td>
           <td>{{ factura.datelimit }}</td>
@@ -115,12 +115,13 @@ export default {
         });
 
         // Filtrar las facturas para mostrar solo las que correspondan al usuario actual
-    this.facturas = response.data
-      .filter(factura => factura.idcustomer == this.userID)
-      .sort((a, b) => b.facturenumber - a.facturenumber); // Ordenar por facturenumber de mayor a menor
+        this.facturas = response.data
+          .filter(factura => factura.idcustomer == this.userID)
+          .sort((a, b) => b.facturenumber - a.facturenumber); // Ordenar por facturenumber de mayor a menor
 
       } catch (error) {
         console.error('Error fetching facturas:', error);
+        alert('Error al obtener las facturas.');
       }
     },
 
@@ -133,102 +134,140 @@ export default {
           }
         });
         this.companies = response.data.filter(
-          (companies) => companies.idcompany === parseInt(this.userFKcompany )
+          (company) => company.idcompany === parseInt(this.userFKcompany)
         );
         //this.companies = response.data;
       } catch (error) {
         console.error('Error fetching companies:', error);
+        alert('Error al obtener las empresas.');
       }
     },
 
+    // Función auxiliar para convertir una imagen a base64 con opacidad ajustable
+    getImageDataUrl(url, opacity = 1) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.setAttribute('crossOrigin', 'anonymous'); // Evita problemas de CORS
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext('2d');
+
+          // Establecer la opacidad
+          ctx.globalAlpha = opacity;
+
+          // Dibujar la imagen con la opacidad establecida
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          // Convertir el contenido del canvas a Data URL
+          const dataURL = canvas.toDataURL('image/png');
+          resolve(dataURL);
+        };
+        img.onerror = (error) => reject(error);
+        img.src = url;
+      });
+    },
+
     // Función para descargar una factura en formato PDF
-    downloadInvoice(factura, company) {
-      const doc = new jsPDF();
+    async downloadInvoice(factura, company) {
+      try {
+        const doc = new jsPDF();
+
+        // Obtener la imagen de fondo con opacidad 0.2
+        const backgroundUrl = '/img/logoTG.png'; // Ruta relativa desde la carpeta public
+        const background = await this.getImageDataUrl(backgroundUrl, 0.2); // 0.2 = 20% opacidad
+
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+
+        // Añadir la imagen de fondo al PDF
+        doc.addImage(background, 'PNG', 0, 0, pageWidth, pageHeight);
+
         // Configuración de fuentes y estilos
         doc.setFont('Courier', 'normal');
 
-// Encabezado
-doc.setFontSize(25);
-doc.setTextColor(0, 0, 0); // Negro
-doc.text(`Empresa acueducto,${company.Name}`, 130, 20, null, null, 'center'); // Nombre de la empresa centrado
+        // Encabezado
+        doc.setFontSize(25);
+        doc.setTextColor(0, 0, 0); // Negro
+        doc.text(`Empresa acueducto, ${company.Name}`, pageWidth / 2, 20, { align: 'center' }); // Nombre de la empresa centrado
 
-// Línea divisoria en color azul agua
-doc.setDrawColor(0, 102, 102); // Establecer el color de la línea a azul agua
-doc.setLineWidth(2);//gruesor
-doc.line(205, 25, 25, 25);
+        // Línea divisoria en color azul agua
+        doc.setDrawColor(0, 102, 102); // Establecer el color de la línea a azul agua
+        doc.setLineWidth(2);//gruesor
+        doc.line(205, 25, 25, 25);
 
-// Titulo
-doc.setFontSize(15);
-doc.setTextColor(0);
-doc.text('Factura de Agua', 30, 10, null, null, 'center');
+        doc.setFontSize(15);
+        doc.setTextColor(0);
+        doc.text('Factura de Agua', 30, 10, null, null, 'center');
 
-// Título de la factura en negrita
-doc.setFont('Courier', 'bold');
-doc.setFontSize(11);
-doc.text(`Pago de Referencia: #${factura.codfacture}`, 170, 10, 'center');
+        // Título de la factura en negrita
+        doc.setFont('Courier', 'bold');
+        doc.setFontSize(11);
+        doc.text(`Pago de Referencia: #${factura.codfacture}`, pageWidth - 30, 10, { align: 'right' });
 
-// Configuración de fuentes y estilos
-doc.setFont('Courier', 'normal');
+        // Info de Empresa
+        doc.setFont('Courier', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(0);
+        doc.text(`NIT: ${company.nit}, Correo: ${company.Email}`, 118, 30);
 
-//Info de Empresa
-doc.setFontSize(8);
-doc.text(`NIT: ${company.nit},`, 126, 30);
-doc.text(`Correo: ${company.Email}`, 160, 30);
+        // Datos del cliente
+        doc.setFontSize(12);
+        doc.setTextColor(50); // Gris
+        doc.text('INFORMACIÓN GENERAL', 10, 45);
 
+        doc.setTextColor(0); // Negro
+        doc.text(`Factura Número: ${factura.facturenumber}`, 10, 50);
+        doc.text(`Fecha Límite de Pago: ${factura.datelimit}`, 10, 55);
 
-// Datos del cliente
-doc.setFontSize(12);
-doc.setTextColor(50); // Color gris para datos del cliente
-doc.text('INFORMACIÓN GENERAL', 10, 45);
+        doc.setTextColor(50); // Gris
+        doc.text('Datos del Cliente', 126, 45, { align: 'center' });
 
-doc.setTextColor(0); // Restablecer el color a negro
-doc.text(`Factura Número: ${factura.facturenumber}`, 10, 50);
-doc.text(`Fecha Límite de Pago: ${factura.datelimit}`, 10, 55);
+        doc.setTextColor(0); // Negro
+        doc.text(`Nombre: ${this.userName} ${this.userLastName}`, 104, 50);
+        doc.text(`N° Cedula: ${this.userCedula}`, 104, 55);
 
-doc.setTextColor(50); // Color gris para datos del cliente
-doc.text('Datos del Cliente', 129, 45, 'center');
+        // Línea divisoria en color azul agua
+        doc.setDrawColor(0, 102, 102); // Establecer el color de la línea a azul agua
+        doc.setLineWidth(0.5);//gruesor
+        doc.line(205, 65, 65, 65);
 
-doc.setTextColor(0); // Restablecer el color a negro
-doc.text(`Nombre: ${this.userName} ${this.userLastName}`, 108, 50);
-//doc.text(`${this.userLastName}`, 170, 50); 
-doc.text(`N° Cedula: ${this.userCedula}`, 108, 55);
+        // Historial de consumo
+        doc.setTextColor(50); // Gris
+        doc.text('Historial de consumo', pageWidth / 2, 75, { align: 'center' });
 
+        doc.setTextColor(0); // Restablecer el color a negro
+        doc.text('Se establece un consumo de ', 10, 80);
+        doc.setFont('Courier', 'bold');
+        doc.text(`${factura.consumer}`, 78, 80);
+        doc.setFont('Courier', 'normal');
+        doc.text('Mt3 a partir del proceso de calcular:', 85, 80);
+        doc.text(`(Lectura actual: ${factura.meterafter}) - (Lectura anterior: ${factura.meterbefore}),Para un periodo comprendido`, 10, 85);
+        doc.text(`entre el ${factura.datecreation} y ${factura.datepayment}. Como observacion se tiene NORMAL con el`, 10, 90);
+        doc.text(`metodo de calculo DIFERENCIA LECTURAS`, 10, 95);
 
-// Línea divisoria en color azul agua
-doc.setDrawColor(0, 102, 102); // Establecer el color de la línea a azul agua
-doc.setLineWidth(0.5);//gruesor
-doc.line(205, 65, 65, 65);
+        doc.setFont('Courier', 'bold');
+        doc.text('TOTALES DE COBRO', 30, 115, 'center');
 
-doc.setTextColor(50); // Color gris para datos del cliente
-doc.text('Historial de consumo', 36, 75, 'center');
+        doc.setFont('Courier', 'normal');
+        doc.text(`Total del mes: $${factura.totalpay}`, 10, 120);
 
-doc.setTextColor(0); // Restablecer el color a negro
-doc.text('Se establece un consumo de ', 10, 80);
-doc.setFont('Courier', 'bold');
-doc.text(`${factura.consumer}`, 78, 80);
-doc.setFont('Courier', 'normal');
-doc.text('Mt3 a partir del proceso de calcular:', 85, 80);
-doc.text(`(Lectura actual: ${factura.meterafter}) - (Lectura anterior: ${factura.meterbefore}),Para un periodo comprendido`, 10, 85);
-doc.text(`entre el ${factura.datecreation} y ${factura.datepayment}. Como observacion se tiene NORMAL con el`, 10, 90);
-doc.text(`metodo de calculo DIFERENCIA LECTURAS`, 10, 95);
-
-doc.setFont('Courier', 'bold');
-doc.text('TOTALES DE COBRO', 30, 115, 'center');
-
-doc.setFont('Courier', 'normal');
-doc.text(`Total del mes: $${factura.totalpay}`, 10, 120);
-//doc.text(`Cliente: ${this.customerName} (ID: ${this.customerId})`,10,125);
-
-//doc.text(`ID: ${this.customerId}`, 10, 75);
-      doc.save(`Factura_${factura.facturenumber}.pdf`);
+        // Guardar el PDF
+        doc.save(`Factura_${factura.facturenumber}.pdf`);
+      } catch (error) {
+        console.error('Error generando el PDF:', error);
+        alert('Hubo un error al generar la factura.');
+      }
     },
 
     goToPayment(totalPay, codfacture) {
-  console.log("Monto total al hacer clic:", totalPay); // Imprimir para depurar
-  this.$router.push({ path: `/api/payment/${totalPay}`,
-    query: {codfacture}
-   }); // Redirige a la vista de pago con el monto
-}
+      console.log("Monto total al hacer clic:", totalPay); // Imprimir para depurar
+      this.$router.push({ 
+        path: `/api/payment/${totalPay}`,
+        query: { codfacture }
+      }); // Redirige a la vista de pago con el monto
+    }
   }
 };
 </script>
@@ -302,5 +341,27 @@ th, td {
   cursor: not-allowed; /* Cambiar cursor cuando está deshabilitado */
   opacity: 0.6; /* Añadir opacidad cuando está deshabilitado */
 }
-</style>
 
+/* Responsive Table */
+@media (max-width: 768px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  th, td {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px;
+  }
+
+  th {
+    background-color: #f2f2f2;
+    position: sticky;
+    top: 0;
+  }
+
+  tr {
+    margin-bottom: 15px;
+  }
+}
+</style>

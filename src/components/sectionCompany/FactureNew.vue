@@ -123,6 +123,9 @@
       </div>
 
       <button type="submit">Crear Factura</button>
+      <div>
+      <button class="back-button" type="button" @click="goBack">Regresar</button>
+    </div>
     </form>
   </div>
 </template>
@@ -150,7 +153,11 @@ export default {
       },
       customerName: this.$route.query.name,
       customerEmail: this.$route.query.email,
+      //customerCedula: this.$route.query.cedula,
+      //customerLastName: this.$route.query.lastName,
       userName: '', 
+      userEmail: ''
+      //userLastName: ''
     };
   },
   created() {
@@ -169,8 +176,8 @@ export default {
         console.log(response.data); // Verificar la respuesta
         this.$router.push({
           name: 'FactureInfoCustomer',
-          params: { idcustomer: this.facture.idcustomer },
-          query: { name: this.customerName },
+          params: { idcustomer: this.facture.idcustomer},
+          query: { name: this.customerName, email: this.customerEmail},
         });
       } catch (error) {
         console.error('Error creando la factura:', error.response?.data); // Mostrar el error completo
@@ -182,6 +189,9 @@ export default {
       if (!/^\d*$/.test(value)) {
         event.target.value = value.replace(/\D/g, '');
       }
+    },
+    goBack() {
+      this.$router.go(-1); // Regresa a la página anterior (cualquiera)
     }
   }
 };
@@ -232,6 +242,16 @@ button {
 
 button:hover {
   background-color: #45a049;
+}
+
+.back-button {
+  background-color: #007bff; /* Color azul */
+  color: white;
+}
+
+
+.back-button:hover {
+  background-color: #0056b3; /* Color azul más oscuro al pasar el ratón */
 }
 </style>
 
