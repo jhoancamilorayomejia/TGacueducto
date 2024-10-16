@@ -153,6 +153,8 @@ export default {
       },
       customerName: this.$route.query.name,
       customerEmail: this.$route.query.email,
+      customerCedula: this.$route.query.cedula,
+      customerLastName: this.$route.query.last_name,
       //customerCedula: this.$route.query.cedula,
       //customerLastName: this.$route.query.lastName,
       userName: '', 
@@ -177,7 +179,7 @@ export default {
         this.$router.push({
           name: 'FactureInfoCustomer',
           params: { idcustomer: this.facture.idcustomer},
-          query: { name: this.customerName, email: this.customerEmail},
+          query: { name: this.customerName, email: this.customerEmail, cedula: this.customerCedula, last_name: this.customerLastName},
         });
       } catch (error) {
         console.error('Error creando la factura:', error.response?.data); // Mostrar el error completo

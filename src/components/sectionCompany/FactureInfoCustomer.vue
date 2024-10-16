@@ -3,7 +3,7 @@
     <h2>Historial de facturas</h2>
     <!--h5>Correo: {{ userEmail }} </h5-->
     <!--h5>ID: {{ userID }}</h5-->
-    <h3>Cliente: {{ customerName }}, Correo: {{ customerEmail }}</h3>
+    <h3>Cliente: {{ customerName }}, Correo: {{ customerEmail }} </h3>
     <!--h5>ID: {{ customerId }} </h5-->
     <div class="invoice-buttons">
       <button @click="viewFactureNew(customerId, customerName)">Nueva factura</button>
@@ -371,7 +371,7 @@ export default {
     viewFactureNew(idcustomer, name) {
       this.$router.push({
         path: `/api/customer/new-facture/${idcustomer}`,
-        query: { name, email: this.customerEmail },
+        query: { name, email: this.customerEmail, cedula: this.customerCedula, last_name: this.customerLastName},
       });
     },
     async deleteFacture(idfacture) {
