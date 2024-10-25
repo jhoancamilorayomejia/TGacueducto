@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 
@@ -117,6 +118,20 @@ func CreateAdmin(c *gin.Context) {
 		return
 	}
 
+	// Verificar si el email ya existe en la base de datos
+	var existingEmail string
+	err := db.DB.QueryRow("SELECT email FROM admin WHERE email = $1", admin.Email).Scan(&existingEmail)
+	if err == nil {
+		// Si no hay error, significa que el email ya está registrado
+		c.JSON(http.StatusConflict, gin.H{"error": "El email ya está en uso"})
+		return
+	} else if err != sql.ErrNoRows {
+		// Si ocurre un error diferente, devolver un error interno
+		log.Printf("Error checking email: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al verificar el email"})
+		return
+	}
+
 	// Generar un secret_key único
 	secretKey := models.GenerateRandomHexString(32) // Genera una cadena hex con 32 bytes
 	admin.SecretKey = secretKey
@@ -130,6 +145,7 @@ func CreateAdmin(c *gin.Context) {
 	}
 	admin.Password = string(hashedPassword)
 
+	// Insertar el nuevo administrador en la base de datos
 	_, err = db.DB.Exec(`
 		INSERT INTO admin (nombre, apellido, email, password, secret_key)
 		VALUES ($1, $2, $3, $4, $5)
@@ -140,5 +156,4 @@ func CreateAdmin(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Administrador registrado con éxito", "secret_key": secretKey})
 }

@@ -1,10 +1,11 @@
 <template>
+  <div class="background-container"> <!-- Contenedor para el fondo -->
   <div class="invoice-container">
     <div class="invoice-header">
       <h2>Área de Gestión de Clientes</h2>
     </div>
     <div class="invoice-buttons">
-      <button class="button-nuevoPrestadorSP" @click="UsuarioForm">+ Nuevo Cliente</button>
+      
     </div>
     <table>
       <thead>
@@ -40,7 +41,11 @@
         </tr>
       </tbody>
     </table>
+    <div class="invoice-buttons">
+      <button class="back-button" type="button" @click="goBack">Regresar</button>
+    </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -87,95 +92,192 @@ export default {
         console.error('Error al actualizar cliente:', error);
         alert('Hubo un error al intentar actualizar el cliente.');
       }
+    },
+    goBack() {
+      this.$router.go(-1); // Regresa a la página anterior (cualquiera)
     }
   }
 };
 </script>
   
-  <style scoped>
-  body {
-    background-color: #ffffff; /* Fondo sólido para toda la página */
-    margin: 0;
-    padding: 0;
-    font-family: 'Roboto', sans-serif; /* Tipo de letra */
-    font-size: 11px; /* Tamaño de letra general */
-  }
-  
-  .invoice-container {
-    background-color: #f3f3f3; /*color de formulario */
-    padding: 20px;
-    margin: 50px auto;
-    width: 80%;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .invoice-header {
-    background-color: #62b5ec;
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    font-size: 15px;
-  }
-  
-  .invoice-buttons {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .button-nuevoPrestadorSP {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 14px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .button-nuevoPrestadorSP:hover {
-    background-color: #0056b3;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 0 auto;
-    font-size: 14px;
-  }
-  
-  th, td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-  }
-  
-  th {
-    background-color: #f2f2f2;
-  }
-  
-  input {
-    border: 1px solid #ccc;
-    padding: 5px;
-    border-radius: 4px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  
-  .btn-save {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  
-  .btn-save:hover {
-    background-color: #218838;
-  }
-  
+<style scoped>
+body {
+  background-color: #ffffff; /* Fondo sólido para toda la página */
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif; /* Tipo de letra */
+}
 
-  </style>
+.invoice-container {
+  background-color: rgba(243, 243, 243, 0.9); /* Color de formulario semi-transparente */
+  padding: 60px;
+  margin: 90px auto;
+  width: 80%; /* Hacer el contenedor más pequeño */
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
+  position: relative; /* Para colocar la sombra en la parte trasera */
+}
+
+.invoice-header {
+  display: flex;
+  justify-content: space-between; /* Alinea los elementos a los extremos */
+  background-color: #b7daee;
+  padding: 5px; /* Reducir el padding */
+  border-radius: 15px;
+  margin-bottom: 10px;
+  font-size: 11px; /* Hacer el texto más pequeño */
+}
+
+.user-info {
+  text-align: right; /* Alinea el texto a la derecha */
+  color: rgb(0, 0, 0); /* Texto en blanco para visibilidad */
+}
+
+.usuario-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 auto;
+  font-size: 11px; /* Hacer el tamaño de la letra de la tabla más pequeño */
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 4px; /* Reducir el padding */
+  text-align: center;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+button {
+  padding: 5px 10px;
+  background-color: #18b139;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #31e021;
+}
+
+.btn-edit {
+  background-color: #31e021;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.btn-edit:hover {
+  background-color: #2980b9;
+}
+
+.btn-delete {
+  background-color: #e74c3c;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+}
+
+.btn-delete:hover {
+  background-color: #c0392b;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center; 
+  gap: 10px; 
+}
+
+.btn-info {
+  background-color: #e77325;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.btn-info:hover {
+  background-color: #d35400;
+}
+
+/* Añadir un fondo detrás de invoice-container */
+.invoice-container::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  background-color: #8ED6F2; /* Color azul agua */
+  border-radius: 10px;
+  z-index: -1; /* Asegurarse de que quede detrás del contenedor */
+  box-shadow: 0 14px 121px rgba(0, 0, 0, 0.1); /* Sombra para el fondo */
+}
+
+/* Estilo para el botón "Nuevo Cliente" */
+.button-container {
+  display: flex;
+  justify-content: center; /* Centrar el botón */
+  margin-top: 20px; /* Espacio superior */
+}
+
+.button-nuevoPrestadorSP {
+  padding: 15px 30px; /* Aumentar tamaño */
+  background-color: #62b5ec;
+  color: white;
+  border: none;
+  border-radius: 20px; /* Bordes redondeados */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra */
+  font-size: 16px; /* Aumentar tamaño de fuente */
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s; /* Transición suave */
+}
+
+.button-nuevoPrestadorSP:hover {
+  background-color: #2980b9; /* Color al pasar el mouse */
+  transform: scale(1.05); /* Efecto de aumento */
+}
+
+.background-container {
+  background-image: url('https://cdn.leonardo.ai/users/65a8cf55-c959-4394-91b9-30d6f5167b8c/generations/6a0f6c27-9594-4c4d-8e92-8c60e0a33d2d/Leonardo_Phoenix_A_realistic_depiction_of_a_cluttered_workspac_3.jpg');
+  background-size: cover; /* Ajusta la imagen para cubrir todo el contenedor */
+  background-position: center; /* Centra la imagen */
+  background-repeat: no-repeat; /* Evita que la imagen se repita */
+  height: 100vh; /* O ajusta a la altura deseada */
+  display: flex;
+  justify-content: center; /* Centrar el contenido */
+  align-items: center; /* Centrar verticalmente */
+}
+
+.invoice-buttons {
+  display: flex;
+  justify-content: center; /* Centrar los botones */
+  margin-top: 20px; /* Espacio superior para los botones */
+}
+
+ .back-button {
+  padding: 12px 27px; /* Aumentar tamaño */
+  background-color: #62b5ec;
+  color: white;
+  border: none;
+  border-radius: 20px; /* Bordes redondeados */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra */
+  font-size: 16px; /* Aumentar tamaño de fuente */
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s; /* Transición suave */
+  margin: 0 10px; /* Espacio entre botones */
+}
+
+.back-button:hover {
+  background-color: #2980b9; /* Color al pasar el mouse */
+  transform: scale(1.05); /* Efecto de aumento */
+}
+</style>

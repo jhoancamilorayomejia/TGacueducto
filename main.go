@@ -65,6 +65,8 @@ func main() {
 	// Nueva ruta para enviar el correo
 	r.POST("/api/send-email", controllers.SendEmail)
 
+	r.GET("/api/customers", controllers.GetUsuarios) // Ruta para obtener todos los clientes
+
 	err = r.Run(":8081")
 	if err != nil {
 		log.Fatalf("Error starting server: %v", err)

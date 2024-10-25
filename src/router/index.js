@@ -15,6 +15,7 @@ import FactureInfoCustomer from '@/components/sectionCompany/FactureInfoCustomer
 import FactureNew from '@/components/sectionCompany/FactureNew.vue';
 import PayView from '../components/sectionCustomer/payView.vue';
 
+import AllCustomerEmail from '../components/sectionCompany/AllCustomerEmail.vue'; // Asegúrate de importar el componente
 
 const routes = [
   { path: '/', component: LoginView },
@@ -32,8 +33,8 @@ const routes = [
   { path: '/api/customer/info-facture/:idcustomer', name: 'FactureInfoCustomer', component: FactureInfoCustomer },
   { path: '/api/customer/new-facture/:idcustomer', name: 'FactureNew', component: FactureNew },
   { path: '/api/payment/:totalpay', component: PayView },
-
-
+ 
+  { path: '/api/customers', component: AllCustomerEmail },
 
   { path: '/:catchAll(.*)', redirect: '/' } // Ruta catch-all
 ];

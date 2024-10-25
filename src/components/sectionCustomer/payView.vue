@@ -1,4 +1,5 @@
 <template>
+   <div class="background-container"> <!-- Contenedor para el fondo -->
   <div class="receipt-container">
     <h1 class="receipt-title">Recibo de Pago</h1>
     <div class="receipt-details">
@@ -14,6 +15,7 @@
     <!-- Contenedor del botón de pago -->
     <div id="wallet_container"></div>
   </div>
+</div>
 </template>
 
 <script>
@@ -88,13 +90,13 @@ export default {
 
 <style scoped>
 .receipt-container {
-  background-color: #f9f9f9;
+  background-color: rgba(243, 243, 243, 0.9); /* Color de formulario semi-transparente */
   padding: 30px;
-  margin: 50px auto;
-  width: 80%;
-  border-radius: 8px;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  margin: 90px auto;
+  width: 80%; /* Hacer el contenedor más pequeño */
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
+  position: relative; /* Para colocar la sombra en la parte trasera */
 }
 
 .receipt-title {
@@ -144,12 +146,23 @@ export default {
 }
 
 .back-button {
-  background-color: #007bff; /* Color azul */
+  background-color: #7f8081; /* Color azul */
   color: white;
 }
 
 .back-button:hover {
-  background-color: #0056b3; /* Color azul más oscuro al pasar el ratón */
+  background-color: #b3b3b3; /* Color azul más oscuro al pasar el ratón */
+}
+
+.background-container {
+  background-image: url('https://cdn.leonardo.ai/users/65a8cf55-c959-4394-91b9-30d6f5167b8c/generations/3379ab07-14d2-4dd8-ba58-13c1f38e6617/Leonardo_Phoenix_A_cluttered_desk_with_multiple_papers_and_doc_0.jpg');
+  background-size: cover; /* Ajusta la imagen para cubrir todo el contenedor */
+  background-position: center; /* Centra la imagen */
+  background-repeat: no-repeat; /* Evita que la imagen se repita */
+  height: 100vh; /* O ajusta a la altura deseada */
+  display: flex;
+  justify-content: center; /* Centrar el contenido */
+  align-items: center; /* Centrar verticalmente */
 }
 </style>
 

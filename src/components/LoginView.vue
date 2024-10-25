@@ -137,7 +137,7 @@ body {
   justify-content: flex-start; /* Alinea el formulario hacia la izquierda */
   align-items: center;
   height: 97.5vh;
-  background-image: url('https://agua.org.mx/wp-content/uploads/2020/06/ingeniero-t%C3%A9cnico-tomando-muestra-de-agua-an%C3%A1lisis-1140x600-1.jpg');
+  background-image: url('https://cdn.leonardo.ai/users/65a8cf55-c959-4394-91b9-30d6f5167b8c/generations/673bbf3e-182b-4a03-8ad6-245b8e982156/Leonardo_Phoenix_A_wideangle_image_featuring_a_worn_cementcolo_0.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -180,7 +180,7 @@ body {
 .login-button {
   width: 100%;
   padding: 10px;
-  background: linear-gradient(90deg, #000000 0%, #d68203 100%);
+  background: linear-gradient(90deg, #000000 0%, #e77325 100%);
   color: white;
   border: none;
   border-radius: 15px;

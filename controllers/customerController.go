@@ -156,14 +156,40 @@ func RegisterCustomer(c *gin.Context) {
 		return
 	}
 
+	// Verificar si ya existe un cliente con el mismo correo electrónico
+	var emailExists bool
+	err := db.DB.QueryRow(`SELECT EXISTS (SELECT 1 FROM customer WHERE email = $1)`, client.Email).Scan(&emailExists)
+	if err != nil {
+		log.Printf("Error verificando correo electrónico: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al verificar el correo electrónico"})
+		return
+	}
+	if emailExists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "El correo electrónico ya está registrado"})
+		return
+	}
+
+	// Verificar si ya existe un cliente con la misma cédula
+	var cedulaExists bool
+	err = db.DB.QueryRow(`SELECT EXISTS (SELECT 1 FROM customer WHERE cedula = $1)`, client.Cedula).Scan(&cedulaExists)
+	if err != nil {
+		log.Printf("Error verificando cédula: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al verificar la cédula"})
+		return
+	}
+	if cedulaExists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "La cédula ya está registrada"})
+		return
+	}
+
 	// Generar un secret_key único
 	secretKey := models.GenerateRandomHexString(32) // Genera una cadena hex con 32 bytes
 	client.SecretKey = secretKey
 
 	// Verificar si la compañía existe
-	var exists bool
-	err := db.DB.QueryRow(`SELECT EXISTS (SELECT 1 FROM company WHERE idcompany = $1)`, client.IDcompany).Scan(&exists)
-	if err != nil || !exists {
+	var companyExists bool
+	err = db.DB.QueryRow(`SELECT EXISTS (SELECT 1 FROM company WHERE idcompany = $1)`, client.IDcompany).Scan(&companyExists)
+	if err != nil || !companyExists {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "La compañía seleccionada no existe"})
 		return
 	}

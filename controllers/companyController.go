@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 
@@ -94,6 +95,34 @@ func CreateCompany(c *gin.Context) {
 	// Vincular los datos del JSON al struct `Company`
 	if err := c.BindJSON(&company); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos"})
+		return
+	}
+
+	// Verificar si el email ya existe en la base de datos
+	var existingEmail string
+	err := db.DB.QueryRow("SELECT email FROM company WHERE email = $1", company.Email).Scan(&existingEmail)
+	if err == nil {
+		// Si no hay error, significa que el email ya está registrado
+		c.JSON(http.StatusConflict, gin.H{"error": "El email ya está en uso"})
+		return
+	} else if err != sql.ErrNoRows {
+		// Si ocurre un error diferente, devolver un error interno
+		log.Printf("Error checking email: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al verificar el email"})
+		return
+	}
+
+	// Verificar si el NIT ya existe en la base de datos
+	var existingNit string
+	err = db.DB.QueryRow("SELECT nit FROM company WHERE nit = $1", company.IDnit).Scan(&existingNit)
+	if err == nil {
+		// Si no hay error, significa que el NIT ya está registrado
+		c.JSON(http.StatusConflict, gin.H{"error": "El NIT ya está en uso"})
+		return
+	} else if err != sql.ErrNoRows {
+		// Si ocurre un error diferente, devolver un error interno
+		log.Printf("Error checking NIT: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al verificar el NIT"})
 		return
 	}
 

@@ -247,13 +247,13 @@ button:hover {
 }
 
 .back-button {
-  background-color: #007bff; /* Color azul */
+  background-color: #837d7d; /* Color azul */
   color: white;
 }
 
 
 .back-button:hover {
-  background-color: #0056b3; /* Color azul más oscuro al pasar el ratón */
+  background-color: #b3b3b3; /* Color azul más oscuro al pasar el ratón */
 }
 </style>
 

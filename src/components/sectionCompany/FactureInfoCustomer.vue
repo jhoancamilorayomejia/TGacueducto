@@ -1,43 +1,40 @@
 <template>
+  <div class="background-container"> <!-- Contenedor para el fondo -->
   <div class="facture-info-container">
-    <h2>Historial de facturas</h2>
+    <h2 class="digital-font">Historial de facturas</h2>
     <!--h5>Correo: {{ userEmail }} </h5-->
     <!--h5>ID: {{ userID }}</h5-->
-    <h3>Cliente: {{ customerName }}, Correo: {{ customerEmail }} </h3>
+    <h3 class="digital-font">Cliente: {{ customerName }}, Correo: {{ customerEmail }} </h3>
     <!--h5>ID: {{ customerId }} </h5-->
-    <div class="invoice-buttons">
-      <button @click="viewFactureNew(customerId, customerName)">Nueva factura</button>
-      <button type="button" @click="goBack">Regresar</button>
-    </div>
     <table>
       <thead>
         <tr>
-          <th>Número de Factura</th>
-          <th>Medidor Anterior</th>
-          <th>Medidor Actual</th>
-          <th>Consumo</th>
-          <th>Cod. de factura</th>
-          <th>Comienzo de Periodo</th>
-          <th>Final de Periodo</th>
-          <th>Fecha limite de Pago</th>
-          <th>Total a Pagar</th>
-          <th>Estado</th>
-          <th>Factura PDF</th>
-          <th>Enviar por Correo</th> <!-- Nueva columna -->
-          <th>Acciones</th>
+          <th class="digital-font">Número de Factura</th>
+          <th class="digital-font">Medidor Anterior</th>
+          <th class="digital-font">Medidor Actual</th>
+          <th class="digital-font">Consumo</th>
+          <th class="digital-font">Cod. de factura</th>
+          <th class="digital-font">Comienzo de Periodo</th>
+          <th class="digital-font">Final de Periodo</th>
+          <th class="digital-font">Fecha limite de Pago</th>
+          <th class="digital-font">Total a Pagar</th>
+          <th class="digital-font">Estado</th>
+          <th class="digital-font">Factura PDF</th>
+          <th class="digital-font">Enviar por Correo</th> <!-- Nueva columna -->
+          <th class="digital-font">Acciones</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="factura in facturas" :key="factura.idfacture">
-          <td>{{ factura.facturenumber }}</td>
-          <td>{{ factura.meterbefore }}</td>
-          <td>{{ factura.meterafter }}</td>
-          <td>{{ factura.consumer }}</td>
-          <td>{{ factura.codfacture }} </td>
-          <td>{{ factura.datecreation }}</td>
-          <td>{{ factura.datepayment }}</td>
-          <td>{{ factura.datelimit }}</td>
-          <td>${{ factura.totalpay }}</td>
+          <td class="digital-font">{{ factura.facturenumber }}</td>
+          <td class="digital-font">{{ factura.meterbefore }}</td>
+          <td class="digital-font">{{ factura.meterafter }}</td>
+          <td class="digital-font">{{ factura.consumer }}</td>
+          <td class="digital-font">{{ factura.codfacture }} </td>
+          <td class="digital-font">{{ factura.datecreation }}</td>
+          <td class="digital-font">{{ factura.datepayment }}</td>
+          <td class="digital-font">{{ factura.datelimit }}</td>
+          <td class="digital-font">${{ factura.totalpay }}</td>
           <td>
            <select v-model="factura.statusfacture" @change="updateFactureStatus(factura)" class="form-select">
            <option value="Pendiente">Pendiente</option>
@@ -68,7 +65,12 @@
         <p>Enviando correo, por favor espera...</p>
       </div>
     </div>
+    <div class="invoice-buttons">
+      <button class="new-invoice-button" @click="viewFactureNew(customerId, customerName)">Nueva factura</button>
+      <button class="back-button" type="button" @click="goBack">Regresar</button>
+    </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -207,7 +209,7 @@ export default {
         doc.text('Datos del Cliente', pageWidth - 88, 45, { align: 'center' });
 
         doc.setTextColor(0); // Negro
-        doc.text(`Nombre: ${this.customerName} ${this.customerLastName}`, 100, 50);
+        doc.text(`Nombre: ${this.customerName}${this.customerLastName}`, 100, 50);
         doc.text(`N° Cedula: ${this.customerCedula}`, 100, 55);
 
         // Línea divisoria en color azul agua
@@ -300,7 +302,7 @@ export default {
         doc.text('Datos del Cliente', pageWidth - 88, 45, { align: 'center' });
 
         doc.setTextColor(0); // Negro
-        doc.text(`Nombre: ${this.customerName} ${this.customerLastName}`, 100, 50);
+        doc.text(`Nombre: ${this.customerName}${this.customerLastName}`, 100, 50);
         doc.text(`N° Cedula: ${this.customerCedula}`, 100, 55);
 
         // Línea divisoria en color azul agua
@@ -400,13 +402,21 @@ goBack() {
 </script>
 
 <style scoped>
+body {
+  background-color: #ffffff; /* Fondo sólido para toda la página */
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif; /* Tipo de letra */
+}
+
 .facture-info-container {
-  background-color: #f3f3f3;
-  padding: 80px; /*para la margen de lo gris */
-  margin: 20px auto;
-  width: 80%;
+  background-color: rgba(243, 243, 243, 0.9); /* Color de formulario semi-transparente */
+  padding: 30px;
+  margin: 90px auto;
+  width: 80%; /* Hacer el contenedor más pequeño */
   border-radius: 10px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
+  position: relative; /* Para colocar la sombra en la parte trasera */
 }
 
 h2 {
@@ -426,14 +436,34 @@ td {
   text-align: center;
 }
 
-th {
-  background-color: #f2f2f2;
+
+  th {
+  background-color: #f2f2f2; /* Color de fondo del encabezado */
 }
+
 
 .invoice-buttons {
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+  justify-content: center; /* Centrar los botones */
+  margin-top: 20px; /* Espacio superior para los botones */
+}
+
+.new-invoice-button, .back-button {
+  padding: 12px 27px; /* Aumentar tamaño */
+  background-color: #62b5ec;
+  color: white;
+  border: none;
+  border-radius: 20px; /* Bordes redondeados */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra */
+  font-size: 16px; /* Aumentar tamaño de fuente */
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s; /* Transición suave */
+  margin: 0 10px; /* Espacio entre botones */
+}
+
+.new-invoice-button:hover, .back-button:hover {
+  background-color: #2980b9; /* Color al pasar el mouse */
+  transform: scale(1.05); /* Efecto de aumento */
 }
 
 button {
@@ -508,7 +538,7 @@ button {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.5); /* Fondo oscuro con opacidad */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -539,6 +569,22 @@ button {
 .form-select:focus {
   border-color: #0056b3; /* Color del borde al hacer foco */
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Sombra al hacer foco */
+}
+
+.digital-font {
+  font-family: 'Digital', sans-serif; /* Asegúrate de que la fuente esté disponible en tu proyecto */
+  font-size: 0.8em; /* Ajusta el tamaño como desees */
+}
+
+.background-container {
+  background-image: url('https://cdn.leonardo.ai/users/65a8cf55-c959-4394-91b9-30d6f5167b8c/generations/6a0f6c27-9594-4c4d-8e92-8c60e0a33d2d/Leonardo_Phoenix_A_realistic_depiction_of_a_cluttered_workspac_3.jpg');
+  background-size: cover; /* Ajusta la imagen para cubrir todo el contenedor */
+  background-position: center; /* Centra la imagen */
+  background-repeat: no-repeat; /* Evita que la imagen se repita */
+  height: 100vh; /* O ajusta a la altura deseada */
+  display: flex;
+  justify-content: center; /* Centrar el contenido */
+  align-items: center; /* Centrar verticalmente */
 }
 </style>
 

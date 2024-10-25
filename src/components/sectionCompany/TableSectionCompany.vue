@@ -1,4 +1,5 @@
 <template>
+  <div class="background-container"> <!-- Contenedor para el fondo -->
   <div class="invoice-container">
     <div class="invoice-header">
       <h2>Área de Gestión de Empresa</h2>
@@ -7,10 +8,7 @@
         <h5>Correo: {{ userEmail }} | NIT: {{ userNit }}</h5>
       </div>
     </div>
-    <div class="invoice-buttons">
-      <button class="button-nuevoPrestadorSP" @click="UsuarioForm">+ Nuevo Cliente</button>
-    </div>
-    <table>
+    <table class="usuario-table">
       <thead>
         <tr>
           <th>Cédula</th>
@@ -41,7 +39,12 @@
         </tr>
       </tbody>
     </table>
+    <div class="button-container">
+      <button class="button-nuevoPrestadorSP" @click="UsuarioForm">+ Nuevo Cliente</button>
+      <!--button class="button-allcustomerEmail" @click="AllCusEmail">+ Envios de PDF</button-->
+    </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -82,30 +85,33 @@ export default {
     UsuarioForm() {
       this.$router.push('/api/registerCustomer');
     },
+    AllCusEmail() {
+      this.$router.push('/api/customers');
+    },
     async deleteCustomer(idcustomer) {
-  const confirmDelete = confirm("¿Estás seguro de que deseas eliminar el cliente?");
-  if (confirmDelete) {
-    try {
-      const token = localStorage.getItem('token');
-      await axios.delete(`/api/customer/${idcustomer}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
+      const confirmDelete = confirm("¿Estás seguro de que deseas eliminar el cliente?");
+      if (confirmDelete) {
+        try {
+          const token = localStorage.getItem('token');
+          await axios.delete(`/api/customer/${idcustomer}`, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          this.fetchUsuarios(); // Cambiar fetchAllFacturas a fetchUsuarios para actualizar la lista
+        } catch (error) {
+          console.error('Error al eliminar el cliente:', error);
+          alert('Hubo un error al intentar eliminar el cliente.');
         }
-      });
-      this.fetchAllFacturas(); // Cambiar fetchUsuarios a fetchAllFacturas para actualizar la lista
-    } catch (error) {
-      console.error('Error al eliminar el cliente:', error);
-      alert('Hubo un error al intentar eliminar el cliente.');
-    }
-  }
-},
+      }
+    },
     editCustomer(idcustomer) {
       this.$router.push(`/api/customer/edit/${idcustomer}`);
     },
     viewCustomerInfo(idcustomer, name, email, last_name, cedula) {
       this.$router.push({
         path: `/api/customer/info-facture/${idcustomer}`,
-        query: { name, email, last_name, cedula} // Aquí pasas el email como parámetro de consulta
+        query: { name, email, last_name, cedula } // Aquí pasas el email como parámetro de consulta
       });
     }
   }
@@ -118,26 +124,26 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Roboto', sans-serif; /* Tipo de letra */
-  font-size: 11px; /* Tamaño de letra general */
 }
 
 .invoice-container {
-  background-color: #f3f3f3; /* Color de formulario */
-  padding: 20px;
-  margin: 50px auto;
-  width: 80%;
+  background-color: rgba(243, 243, 243, 0.9); /* Color de formulario semi-transparente */
+  padding: 30px;
+  margin: 90px auto;
+  width: 80%; /* Hacer el contenedor más pequeño */
   border-radius: 10px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
+  position: relative; /* Para colocar la sombra en la parte trasera */
 }
 
 .invoice-header {
-  display: flex;
+  display: flex;  
   justify-content: space-between; /* Alinea los elementos a los extremos */
-  background-color: #62b5ec;
-  padding: 15px;
-  border-radius: 5px;
-  margin-bottom: 20px;
-  font-size: 15px;
+  background-color: #b7daee;
+  padding: 5px; /* Reducir el padding */
+  border-radius: 15px;
+  margin-bottom: 10px;
+  font-size: 12px; /* Hacer el texto más pequeño */
 }
 
 .user-info {
@@ -145,36 +151,16 @@ body {
   color: rgb(0, 0, 0); /* Texto en blanco para visibilidad */
 }
 
-.invoice-buttons {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.btn {
-  padding: 10px 20px;
-  border: none;
-  background-color: #62b5ec;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.btn:hover {
-  background-color: #2980b9;
-}
-
-table {
+.usuario-table {
   width: 100%;
   border-collapse: collapse;
   margin: 0 auto;
-  font-size: 14px;
+  font-size: 11px; /* Hacer el tamaño de la letra de la tabla más pequeño */
 }
 
 th, td {
   border: 1px solid #ddd;
-  padding: 10px;
+  padding: 4px; /* Reducir el padding */
   text-align: center;
 }
 
@@ -215,7 +201,6 @@ button:hover {
   padding: 5px 10px;
   border: none;
   border-radius: 4px;
-  cursor: pointer;
 }
 
 .btn-delete:hover {
@@ -225,7 +210,7 @@ button:hover {
 .action-buttons {
   display: flex;
   justify-content: center; 
-  gap: 15px; 
+  gap: 10px; 
 }
 
 .btn-info {
@@ -239,5 +224,71 @@ button:hover {
 
 .btn-info:hover {
   background-color: #d35400;
+}
+
+/* Añadir un fondo detrás de invoice-container */
+.invoice-container::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  background-color: #8ED6F2; /* Color azul agua */
+  border-radius: 10px;
+  z-index: -1; /* Asegurarse de que quede detrás del contenedor */
+  box-shadow: 0 14px 121px rgba(0, 0, 0, 0.1); /* Sombra para el fondo */
+}
+
+/* Estilo para el botón "Nuevo Cliente" */
+.button-container {
+  display: flex;
+  justify-content: center; /* Centrar el botón */
+  margin-top: 20px; /* Espacio superior */
+}
+
+.button-nuevoPrestadorSP {
+  padding: 12px 27px; /* Aumentar tamaño */
+  background-color: #62b5ec;
+  color: white;
+  border: none;
+  border-radius: 20px; /* Bordes redondeados */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra */
+  font-size: 16px; /* Aumentar tamaño de fuente */
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s; /* Transición suave */
+}
+
+.button-nuevoPrestadorSP:hover {
+  background-color: #2980b9; /* Color al pasar el mouse */
+  transform: scale(1.05); /* Efecto de aumento */
+}
+
+.background-container {
+  background-image: url('https://cdn.leonardo.ai/users/65a8cf55-c959-4394-91b9-30d6f5167b8c/generations/6a0f6c27-9594-4c4d-8e92-8c60e0a33d2d/Leonardo_Phoenix_A_realistic_depiction_of_a_cluttered_workspac_3.jpg');
+  background-size: cover; /* Ajusta la imagen para cubrir todo el contenedor */
+  background-position: center; /* Centra la imagen */
+  background-repeat: no-repeat; /* Evita que la imagen se repita */
+  height: 100vh; /* O ajusta a la altura deseada */
+  display: flex;
+  justify-content: center; /* Centrar el contenido */
+  align-items: center; /* Centrar verticalmente */
+}
+
+.button-allcustomerEmail {
+  padding: 12px 27px; /* Aumentar tamaño */
+  background-color: #62b5ec;
+  color: white;
+  border: none;
+  border-radius: 20px; /* Bordes redondeados */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra */
+  font-size: 16px; /* Aumentar tamaño de fuente */
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s; /* Transición suave */
+}
+
+.button-allcustomerEmail:hover {
+  background-color: #2980b9; /* Color al pasar el mouse */
+  transform: scale(1.05); /* Efecto de aumento */
 }
 </style>

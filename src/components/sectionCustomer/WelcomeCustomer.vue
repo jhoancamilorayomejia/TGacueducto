@@ -1,4 +1,5 @@
 <template>
+  <div class="background-container"> <!-- Contenedor para el fondo -->
   <div class="welcome-container">
     <div class="welcome-header">
       <h2>Sistema de Facturación Digital de Pequeños Acueductos</h2>
@@ -71,6 +72,7 @@
       </tbody>
     </table-->
   </div>
+</div>
 </template>
 
 <script>
@@ -282,21 +284,23 @@ body {
 }
 
 .welcome-container {
-  background-color: #f3f3f3;
-  padding: 20px;
-  margin: 50px auto;
-  width: 80%;
+  background-color: rgba(243, 243, 243, 0.9); /* Color de formulario semi-transparente */
+  padding: 30px;
+  margin: 90px auto;
+  width: 80%; /* Hacer el contenedor más pequeño */
   border-radius: 10px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
+  position: relative; /* Para colocar la sombra en la parte trasera */
 }
 
 .welcome-header {
-  background-color: #62b5ec;
-  padding: 15px;
-  border-radius: 5px;
-  margin-bottom: 20px;
-  font-size: 18px;
-  text-align: center;
+  display: flex;  
+  justify-content: space-between; /* Alinea los elementos a los extremos */
+  background-color: #b7daee;
+  padding: 5px; /* Reducir el padding */
+  border-radius: 15px;
+  margin-bottom: 10px;
+  font-size: 12px; /* Hacer el texto más pequeño */
 }
 
 table {
@@ -363,5 +367,16 @@ th, td {
   tr {
     margin-bottom: 15px;
   }
+}
+
+.background-container {
+  background-image: url('https://cdn.leonardo.ai/users/65a8cf55-c959-4394-91b9-30d6f5167b8c/generations/3379ab07-14d2-4dd8-ba58-13c1f38e6617/Leonardo_Phoenix_A_cluttered_desk_with_multiple_papers_and_doc_0.jpg');
+  background-size: cover; /* Ajusta la imagen para cubrir todo el contenedor */
+  background-position: center; /* Centra la imagen */
+  background-repeat: no-repeat; /* Evita que la imagen se repita */
+  height: 100vh; /* O ajusta a la altura deseada */
+  display: flex;
+  justify-content: center; /* Centrar el contenido */
+  align-items: center; /* Centrar verticalmente */
 }
 </style>
