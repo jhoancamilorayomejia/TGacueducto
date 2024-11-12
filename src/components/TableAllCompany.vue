@@ -1,4 +1,5 @@
 <template>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <div class="background-container"> <!-- Contenedor para el fondo -->
   <div class="invoice-container">
     <div class="invoice-header">
@@ -28,8 +29,9 @@
           </td>
           <td>
             <div class="button-group">
-            <button class="btn-edit" @click="editCompany(company.idcompany)">Modificar</button>
-            <button class= "btn-delete" @click="deleteCompany(company.idcompany)">Eliminar</button>
+            <button class="btn-edit" @click="editCompany(company.idcompany)"><i class="fas fa-edit"></i>Modificar</button>
+            <button class= "btn-delete" @click="deleteCompany(company.idcompany)" > 
+              <i class="fas fa-trash-alt"></i>Eliminar</button>
           </div>
           </td>
         </tr>
@@ -213,6 +215,7 @@ th, td {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  margin-right: 5px;
 }
 
 .btn-edit:hover {

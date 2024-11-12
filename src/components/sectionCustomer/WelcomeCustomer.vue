@@ -1,4 +1,5 @@
 <template>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <div class="background-container"> <!-- Contenedor para el fondo -->
   <div class="welcome-container">
     <div class="welcome-header">

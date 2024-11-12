@@ -1,4 +1,5 @@
 <template>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <div class="background-container"> <!-- Contenedor para el fondo -->
   <div class="facture-info-container">
     <h2 class="digital-font">Historial de facturas</h2>
@@ -53,7 +54,7 @@
             </button>
           </td>
           <td>
-         <button class="btn-delete" @click="deleteFacture(factura.idfacture)">Eliminar</button>
+         <button class="btn-delete" @click="deleteFacture(factura.idfacture)"><i class="fas fa-trash-alt"></i>Eliminar</button>
          </td>
 
         </tr>

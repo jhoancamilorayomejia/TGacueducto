@@ -1,4 +1,5 @@
 <template>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <div class="background-container"> <!-- Contenedor para el fondo -->
   <div class="invoice-container">
     <div class="invoice-header">
@@ -27,8 +28,12 @@
           <td>{{ admin.apellido }}</td>
           <td>{{ admin.email }}</td>
           <td>
-            <button class="btn-edit" @click="editAdmin(admin.idadmin)">Modificar</button>
-            <button @click="deleteAdmin(admin.idadmin)">Eliminar</button>
+            <button class="btn-edit" @click="editAdmin(admin.idadmin)">
+            <i class="fas fa-edit"></i> Modificar
+          </button>
+            <button @click="deleteAdmin(admin.idadmin)" class="btn-delete">
+            <i class="fas fa-trash-alt"></i> Eliminar
+          </button>
           </td>
         </tr>
       </tbody>
@@ -231,6 +236,7 @@ button:hover {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  margin-right: 5px; /* Espacio entre el icono y el texto */
 }
 
 .btn-delete:hover {
