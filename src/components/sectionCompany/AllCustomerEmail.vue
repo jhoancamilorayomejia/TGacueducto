@@ -21,28 +21,45 @@
       </table>
 
       <div class="input-container">
-  <label for="newPassword" class="input-label">Nueva Clave:</label>
-  <div class="password-input-wrapper">
-    <input
-      type="password"
-      id="newPassword"
-      class="input-field"
-      placeholder="Escribe tu nueva contraseña"
-      v-model="newPassword"
-    />
-    <span class="toggle-password" id="togglePassword">
-      <i class="fas fa-eye"></i>
-    </span>
-  </div>
-</div>
+        <label for="newPassword" class="input-label">Nueva Clave:</label>
+        <div class="password-input-wrapper">
+          <input
+            type="password"
+            id="newPassword"
+            class="input-field"
+            placeholder="Escribe tu nueva contraseña"
+            v-model="newPassword"
+          />
+        </div>
+      </div>
 
+      <div class="input-container">
+        <label for="confirmNewPassword" class="input-label">Confirmar Nueva Clave:</label>
+        <div class="password-input-wrapper">
+          <input
+            type="password"
+            id="confirmNewPassword"
+            class="input-field"
+            placeholder="Confirma tu nueva contraseña"
+            v-model="confirmNewPassword"
+          />
+        </div>
+      </div>
 
       <div class="invoice-buttons">
         <button class="back-button" @click="goBack">Regresar</button>
-        <button class="new-invoice-button" @click="changePassword" :disabled="sendingEmail">
+        <button
+          class="new-invoice-button"
+          @click="changePassword"
+          :disabled="sendingEmail || !passwordsMatch"
+        >
           {{ sendingEmail ? 'Cambiando...' : 'Cambiar Contraseña' }}
         </button>
       </div>
+
+      <p v-if="!passwordsMatch && confirmNewPassword" class="error-message">
+        Las contraseñas no coinciden.
+      </p>
     </div>
   </div>
 </template>
@@ -56,8 +73,14 @@ export default {
       userEmail: '',
       userPassword: '',
       newPassword: '',
+      confirmNewPassword: '',
       sendingEmail: false,
     };
+  },
+  computed: {
+    passwordsMatch() {
+      return this.newPassword === this.confirmNewPassword;
+    },
   },
   created() {
     this.userEmail = localStorage.getItem('email');
@@ -77,6 +100,11 @@ export default {
     async changePassword() {
       if (!this.newPassword) {
         alert("Por favor, ingresa una nueva contraseña.");
+        return;
+      }
+
+      if (!this.passwordsMatch) {
+        alert("Las contraseñas no coinciden.");
         return;
       }
 
@@ -102,6 +130,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 body {
@@ -247,5 +276,12 @@ h2 {
   font-size: 12px;
   font-weight: 600;
   color: #5c6bc0;
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 0.9em;
 }
 </style>

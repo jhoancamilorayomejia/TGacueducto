@@ -1,107 +1,136 @@
 <template>
-    <div class="background-container">
-      <div class="facture-info-container">
-        <h2 class="digital-font">Proceso de Cambio de Clave</h2>
-        <h5>Correo: {{ userEmail }} | Para su seguridad las Claves se mostrarán encryptadas</h5>
-  
-        <!-- Tabla para mostrar la información de email y contraseña -->
-        <table class="company-info-table">
-          <thead>
-            <tr>
-              <th>Correo Electrónico</th>
-              <th>Contraseña</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{{ userEmail }}</td>
-              <td>{{ userPassword }}</td>
-            </tr>
-          </tbody>
-        </table>
-  
-        <div class="input-container">
-    <label for="newPassword" class="input-label">Nueva Clave:</label>
-    <div class="password-input-wrapper">
-      <input
-        type="password"
-        id="newPassword"
-        class="input-field"
-        placeholder="Escribe tu nueva contraseña"
-        v-model="newPassword"
-      />
-      <span class="toggle-password" id="togglePassword">
-        <i class="fas fa-eye"></i>
-      </span>
-    </div>
-  </div>
-  
-  
-        <div class="invoice-buttons">
-          <button class="back-button" @click="goBack">Regresar</button>
-          <button class="new-invoice-button" @click="changePassword" :disabled="sendingEmail">
-            {{ sendingEmail ? 'Cambiando...' : 'Cambiar Contraseña' }}
-          </button>
+  <div class="background-container">
+    <div class="facture-info-container">
+      <h2 class="digital-font">Proceso de Cambio de Clave</h2>
+      <h5>Correo: {{ userEmail }} | Para su seguridad las Claves se mostrarán encryptadas</h5>
+
+      <!-- Tabla para mostrar la información de email y contraseña -->
+      <table class="company-info-table">
+        <thead>
+          <tr>
+            <th>Correo Electrónico</th>
+            <th>Contraseña</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ userEmail }}</td>
+            <td>{{ userPassword }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="input-container">
+        <label for="newPassword" class="input-label">Nueva Clave:</label>
+        <div class="password-input-wrapper">
+          <input
+            type="password"
+            id="newPassword"
+            class="input-field"
+            placeholder="Escribe tu nueva contraseña"
+            v-model="newPassword"
+          />
         </div>
       </div>
+
+      <div class="input-container">
+        <label for="confirmNewPassword" class="input-label">Confirmar Nueva Clave:</label>
+        <div class="password-input-wrapper">
+          <input
+            type="password"
+            id="confirmNewPassword"
+            class="input-field"
+            placeholder="Confirma tu nueva contraseña"
+            v-model="confirmNewPassword"
+          />
+        </div>
+      </div>
+
+      <div class="invoice-buttons">
+        <button class="back-button" @click="goBack">Regresar</button>
+        <button
+          class="new-invoice-button"
+          @click="changePassword"
+          :disabled="sendingEmail || newPassword !== confirmNewPassword"
+        >
+          {{ sendingEmail ? 'Cambiando...' : 'Cambiar Contraseña' }}
+        </button>
+      </div>
+      <p v-if="!passwordsMatch && confirmNewPassword" class="error-message">
+        Las contraseñas no coinciden.
+      </p>
     </div>
-  </template>
-  
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        userEmail: '',
-        userPassword: '',
-        newPassword: '',
-        sendingEmail: false,
-      };
+  </div>
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      userEmail: '',
+      userPassword: '',
+      newPassword: '',
+      confirmNewPassword: '',
+      sendingEmail: false,
+    };
+  },
+  computed: {
+    passwordsMatch() {
+      return this.newPassword === this.confirmNewPassword;
+    }
+  },
+  created() {
+    this.userEmail = localStorage.getItem('email');
+    this.fetchCustomerData();
+  },
+  methods: {
+    async fetchCustomerData() {
+      try {
+        const response = await axios.get('/api/customer/get-email-password', {
+          params: { email: this.userEmail },
+        });
+        this.userPassword = response.data.password;
+      } catch (error) {
+        console.error("Error al obtener los datos del cliente:", error);
+      }
     },
-    created() {
-      this.userEmail = localStorage.getItem('email');
-      this.fetchCompanyData();
+    async changePassword() {
+      if (!this.newPassword) {
+        alert("Por favor, ingresa una nueva contraseña.");
+        return;
+      }
+
+      if (!this.passwordsMatch) {
+        alert("Las contraseñas no coinciden.");
+        return;
+      }
+
+      this.sendingEmail = true;
+
+      try {
+        await axios.post('/api/customer/change-password', {
+          email: this.userEmail,
+          newPassword: this.newPassword,
+        });
+        alert("Contraseña cambiada exitosamente.");
+        this.goBack();
+      } catch (error) {
+        console.error("Error al cambiar la contraseña:", error);
+        alert("Error al cambiar la contraseña. Verifica tu información.");
+      } finally {
+        this.sendingEmail = false;
+      }
     },
-    methods: {
-      async fetchCompanyData() {
-        try {
-          const response = await axios.get('/api/customer/get-email-password', {
-            params: { email: this.userEmail },
-          });
-          this.userPassword = response.data.password;
-        } catch (error) {
-          console.error("Error al obtener los datos de la cliente:", error);
-        }
-      },
-      async changePassword() {
-        if (!this.newPassword) {
-          alert("Por favor, ingresa una nueva contraseña.");
-          return;
-        }
-  
-        this.sendingEmail = true;
-  
-        try {
-          await axios.post('/api/customer/change-password', {
-            email: this.userEmail,
-            newPassword: this.newPassword,
-          });
-          alert("Contraseña cambiada exitosamente.");
-          this.goBack();
-        } catch (error) {
-          console.error("Error al cambiar la contraseña:", error);
-          alert("Error al cambiar la contraseña. Verifica tu información.");
-        } finally {
-          this.sendingEmail = false;
-        }
-      },
-      goBack() {
-        this.$router.go(-1);
-      },
+    goBack() {
+      this.$router.go(-1);
     },
-  };
-  </script>
+  },
+};
+</script>
+
+
   
   <style scoped>
   body {
@@ -248,5 +277,12 @@
     font-weight: 600;
     color: #5c6bc0;
   }
+
+  .error-message {
+  color: red;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 0.9em;
+}
   </style>
   
