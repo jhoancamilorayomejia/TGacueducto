@@ -72,6 +72,9 @@
         </tr>
       </tbody>
     </table-->
+    <div class="button-container">
+      <button class="button-allcustomerEmail" @click="AllCusEmail">Cambio de Clave</button>
+    </div>
   </div>
 </div>
 </template>
@@ -263,6 +266,9 @@ export default {
         alert('Hubo un error al generar la factura.');
       }
     },
+    AllCusEmail() {
+      this.$router.push('/api/customersPassword');
+    },
 
     goToPayment(totalPay, codfacture) {
       console.log("Monto total al hacer clic:", totalPay); // Imprimir para depurar
@@ -379,5 +385,28 @@ th, td {
   display: flex;
   justify-content: center; /* Centrar el contenido */
   align-items: center; /* Centrar verticalmente */
+}
+
+.button-container {
+  display: flex;
+  justify-content: center; /* Centrar el botón */
+  margin-top: 20px; /* Espacio superior */
+}
+
+.button-allcustomerEmail {
+  padding: 12px 27px; /* Aumentar tamaño */
+  background-color: #62b5ec;
+  color: white;
+  border: none;
+  border-radius: 20px; /* Bordes redondeados */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra */
+  font-size: 16px; /* Aumentar tamaño de fuente */
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s; /* Transición suave */
+}
+
+.button-allcustomerEmail:hover {
+  background-color: #2980b9; /* Color al pasar el mouse */
+  transform: scale(1.05); /* Efecto de aumento */
 }
 </style>

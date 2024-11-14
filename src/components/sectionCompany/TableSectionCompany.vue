@@ -42,7 +42,7 @@
     </table>
     <div class="button-container">
       <button class="button-nuevoPrestadorSP" @click="UsuarioForm">+ Nuevo Cliente</button>
-      <!--button class="button-allcustomerEmail" @click="AllCusEmail">+ Envios de PDF</button-->
+      <button class="button-allcustomerEmail" @click="AllCusEmail">Cambio de Clave</button>
     </div>
   </div>
 </div>

@@ -67,6 +67,18 @@ func main() {
 
 	r.GET("/api/customers", controllers.GetUsuarios) // Ruta para obtener todos los clientes
 
+	//cambio de clave para company
+	// Rutas existentes
+	// Ruta para obtener la información de la empresa (email y contraseña)
+	r.GET("/api/company/get-email-password", controllers.GetEmailPassword)
+	// Ruta para cambiar la contraseña
+	r.POST("/api/company/change-password", controllers.ChangeCompanyPassword)
+
+	//ruta para obtener la informacion del cliente (email y contraseña)
+	r.GET("/api/customer/get-email-password", controllers.GetEmailPassword2)
+	// Ruta para cambiar la contraseña
+	r.POST("/api/customer/change-password", controllers.ChangeCustomerPassword)
+
 	err = r.Run(":8081")
 	if err != nil {
 		log.Fatalf("Error starting server: %v", err)

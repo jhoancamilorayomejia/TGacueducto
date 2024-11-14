@@ -16,6 +16,7 @@ import FactureNew from '@/components/sectionCompany/FactureNew.vue';
 import PayView from '../components/sectionCustomer/payView.vue';
 
 import AllCustomerEmail from '../components/sectionCompany/AllCustomerEmail.vue'; // Asegúrate de importar el componente
+import CustomerPassword from '../components/sectionCustomer/customerPassword.vue';
 
 const routes = [
   { path: '/', component: LoginView },
@@ -35,6 +36,7 @@ const routes = [
   { path: '/api/payment/:totalpay', component: PayView },
  
   { path: '/api/customers', component: AllCustomerEmail },
+  { path: '/api/customersPassword', component: CustomerPassword },
 
   { path: '/:catchAll(.*)', redirect: '/' } // Ruta catch-all
 ];
