@@ -1,9 +1,9 @@
-// controllers/emailController.go
 package controllers
 
 import (
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"os"
 
@@ -23,39 +23,60 @@ func SendEmail(c *gin.Context) {
 		return
 	}
 
-	// Obtener el archivo PDF
-	file, err := c.FormFile("pdf")
+	// Obtener los archivos PDF
+	pdfFile, err := c.FormFile("pdf")
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No se pudo obtener el archivo PDF."})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No se pudo obtener el archivo PDF principal."})
 		return
 	}
 
-	// Abrir el archivo
-	openedFile, err := file.Open()
+	pdf2File, err := c.FormFile("pdf2")
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al abrir el archivo PDF."})
-		return
-	}
-	defer openedFile.Close()
-
-	// Leer el contenido del archivo
-	buffer := make([]byte, file.Size)
-	_, err = openedFile.Read(buffer)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al leer el archivo PDF."})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No se pudo obtener el segundo archivo PDF."})
 		return
 	}
 
-	// Configurar el correo electrónico
+	// Crear el mensaje de correo
 	m := gomail.NewMessage()
 	m.SetHeader("From", os.Getenv("EMAIL_FROM"))
 	m.SetHeader("To", to)
 	m.SetHeader("Subject", subject)
 	m.SetBody("text/plain", body)
-	m.Attach(file.Filename, gomail.SetCopyFunc(func(w io.Writer) error {
-		_, err := w.Write(buffer)
-		return err
-	}))
+
+	// Función para adjuntar un archivo
+	attachFile := func(file *multipart.FileHeader) error {
+		// Abrir el archivo
+		openedFile, err := file.Open()
+		if err != nil {
+			return fmt.Errorf("error al abrir el archivo %s: %v", file.Filename, err)
+		}
+		defer openedFile.Close()
+
+		// Leer el contenido del archivo
+		buffer := make([]byte, file.Size)
+		_, err = openedFile.Read(buffer)
+		if err != nil {
+			return fmt.Errorf("error al leer el archivo %s: %v", file.Filename, err)
+		}
+
+		// Adjuntar el archivo al correo
+		m.Attach(file.Filename, gomail.SetCopyFunc(func(w io.Writer) error {
+			_, err := w.Write(buffer)
+			return err
+		}))
+		return nil
+	}
+
+	// Adjuntar ambos archivos
+	if err := attachFile(pdfFile); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := attachFile(pdf2File); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	// Configurar el dialer SMTP
 	d := gomail.NewDialer(
@@ -72,7 +93,7 @@ func SendEmail(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Correo enviado exitosamente."})
+	c.JSON(http.StatusOK, gin.H{"message": "Correo enviado exitosamente con ambos PDFs adjuntos."})
 }
 
 // Función auxiliar para convertir variables de entorno a int

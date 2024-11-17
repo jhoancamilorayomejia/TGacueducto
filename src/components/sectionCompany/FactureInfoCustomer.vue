@@ -49,8 +49,12 @@
             </button>
           </td>
           <td>
-            <button class="btn-email" @click="sendInvoiceByEmail(factura)" :disabled="sendingEmail">
-              <i class="fas fa-envelope"></i> Enviar por correo
+            <button   class="btn-email" 
+    @click="sendInvoiceByEmail(factura)" 
+    :disabled="factura.statusfacture === 'Pagada' || factura.statusfacture === 'Vencida'"
+    :class="{'disabled-button': factura.statusfacture === 'Pagada' || factura.statusfacture === 'Vencida'}"
+  >
+    <i class="fas fa-envelope"></i> Enviar por correo
             </button>
           </td>
           <td>
@@ -333,6 +337,117 @@ export default {
 
         // Obtener el PDF como Blob
         const pdfBlob = doc.output('blob');
+        
+        
+        // Crear el segundo PDF
+       const doc2 = new jsPDF();
+       doc2.setFont('Courier', 'normal');
+       doc2.setFontSize(15);
+       doc.setTextColor(0, 0, 0); // Negro
+       doc2.text('Pasos detallados para realizar el Pago Correspondiente.', 10, 10);
+       // Línea divisoria en color azul agua
+       doc2.setFontSize(8);
+       doc2.text('Para efectuar el pago en la Plataforma web http://localhost:8080/ se debe estar logueado con un correo electronico', 10, 20);
+       doc2.text('asignado por la Entidad asociada y especificar que tipo de usuario eres, en este caso eres un "Usuario Cliente"', 10, 25);
+       // Línea divisoria en color azul agua
+       
+      // Obtener la imagen para el segundo PDF     
+      const imageUrl = '/img/paso1.png'; // Ruta de la nueva imagen
+      const image = await this.getImageDataUrl(imageUrl); // Obtener la imagen como Data URL
+
+    // Especificar el tamaño y la posición de la imagen
+      const imgWidth = 110; // Ancho de la imagen (puedes ajustar este valor)
+      const imgHeight = 43; // Alto de la imagen (puedes ajustar este valor)
+
+    // Posición de la imagen en el PDF (x, y)
+      const imgX = 10;  // Posición horizontal
+      const imgY = 30;  // Posición vertical
+
+    // Añadir la imagen en el segundo PDF
+      doc2.addImage(image, 'PNG', imgX, imgY, imgWidth, imgHeight);
+
+    // Agregar contenido adicional al segundo PDF (puedes seguir agregando más texto)
+     
+       // Obtener la imagen para el segundo PDF     
+      const imageUrl2 = '/img/userimage.png'; // Ruta de la nueva imagen
+      const image2 = await this.getImageDataUrl(imageUrl2); // Obtener la imagen como Data URL
+
+    // Especificar el tamaño y la posición de la imagen
+      const imgWidth2 = 70; // Ancho de la imagen (puedes ajustar este valor)
+      const imgHeight2 = 15; // Alto de la imagen (puedes ajustar este valor)
+
+    // Posición de la imagen en el PDF (x, y)
+      const imgX2 = 130;  // Posición horizontal
+      const imgY2 = 30;  // Posición vertical
+      // Añadir la imagen en el segundo PDF
+      doc2.addImage(image2, 'PNG', imgX2, imgY2, imgWidth2, imgHeight2);
+      
+      doc2.text('Al momento de iniciar sesion se le mostrara una tabla con información importante sobre facturas anteriores y la', 10, 83);
+      doc2.text('actual teniendo en cuenta las fechas especificadas.', 10, 87);
+      doc2.text('Al momento de hacer el pago se mostrará el estado (Pendiente, Pagado o vencido) en el que se encuentra la factura y ', 10, 91);
+      doc2.text('se mostrará habilidado el boton de "Proceso de Pago" para su respectivo pago de factura.', 10, 95);
+
+      const imageUrl3 = '/img/paso2.png'; // Ruta de la nueva imagen
+      const image3 = await this.getImageDataUrl(imageUrl3); // Obtener la imagen como Data URL
+
+    // Especificar el tamaño y la posición de la imagen
+      const imgWidth3 = 125; // Ancho de la imagen (puedes ajustar este valor)
+      const imgHeight3 = 50; // Alto de la imagen (puedes ajustar este valor)
+
+    // Posición de la imagen en el PDF (x, y)
+      const imgX3 = 10;  // Posición horizontal
+      const imgY3 = 100;  // Posición vertical
+      // Añadir la imagen en el segundo PDF
+      doc2.addImage(image3, 'PNG', imgX3, imgY3, imgWidth3, imgHeight3);
+
+      const imageUrl4 = '/img/paso3.png'; // Ruta de la nueva imagen
+      const image4 = await this.getImageDataUrl(imageUrl4); // Obtener la imagen como Data URL
+
+    // el tamaño y la posición de la imagen
+      const imgWidth4 = 135; // Ancho de la imagen (puedes ajustar este valor)
+      const imgHeight4 = 10; // Alto de la imagen (puedes ajustar este valor)
+
+    // Posición de la imagen en el PDF (x, y)
+      const imgX4 = 10;  // Posición horizontal2
+      const imgY4 = 152;  // Posición vertical
+      // Añadir la imagen en el segundo PDF
+      doc2.addImage(image4, 'PNG', imgX4, imgY4, imgWidth4, imgHeight4);
+
+      doc2.text('Al momento de darle click a "Proceso de Pago" se va a mostrar una ventana la cual tendrá el valor correspondiente', 10, 168);
+      doc2.text('a pagar y con una referencia de pago el cual sera unico para su recibo.', 10, 171);
+      doc2.text('Encontrará un botón el cual dirá "Confirmar Pago" para habilitar un segundo botón que dirá "Pagar con Mercado pago".', 10, 175);
+      
+      
+      const imageUrl5 = '/img/paso4.png'; // Ruta de la nueva imagen
+      const image5 = await this.getImageDataUrl(imageUrl5); // Obtener la imagen como Data URL
+
+    // el tamaño y la posición de la imagen
+      const imgWidth5 = 100; // Ancho de la imagen (puedes ajustar este valor)
+      const imgHeight5 = 35; // Alto de la imagen (puedes ajustar este valor)
+
+    // Posición de la imagen en el PDF (x, y)
+      const imgX5 = 10;  // Posición horizontal2
+      const imgY5 = 177;  // Posición vertical
+      // Añadir la imagen en el segundo PDF
+      doc2.addImage(image5, 'PNG', imgX5, imgY5, imgWidth5, imgHeight5);
+
+      //ultimo
+      doc2.text('Lo redireccionará la plataforma de mercado pago en la cual podras efectuar el pago con el metodo que quieras.', 10, 220);
+      
+      const imageUrl6 = '/img/paso5.png'; // Ruta de la nueva imagen
+      const image6 = await this.getImageDataUrl(imageUrl6); // Obtener la imagen como Data URL
+
+    // el tamaño y la posición de la imagen
+      const imgWidth6 = 100; // Ancho de la imagen (puedes ajustar este valor)
+      const imgHeight6 = 35; // Alto de la imagen (puedes ajustar este valor)
+
+    // Posición de la imagen en el PDF (x, y)
+      const imgX6 = 10;  // Posición horizontal2
+      const imgY6 = 225;  // Posición vertical
+      // Añadir la imagen en el segundo PDF
+      doc2.addImage(image6, 'PNG', imgX6, imgY6, imgWidth6, imgHeight6);
+
+      const pdfBlob2 = doc2.output('blob'); // Exportar segundo PDF
 
         // Crear un FormData para enviar el archivo
         const formData = new FormData();
@@ -340,13 +455,14 @@ export default {
         formData.append('subject', `Factura ${factura.facturenumber}`);
         formData.append(
           'body',
-          `Se adjunto la factura número ${factura.facturenumber} para su revisión.`
+          `Aviso de Factura nueva del Servicio de Acueducto de la Entidad ${this.userName}, para su revisión y respectivo pago en la plataforma web, entrando desde el link https://www.localhost:/8080 usando el correo y contraseña correspondiente.`
         );
         formData.append(
           'pdf',
           pdfBlob,
-          `Factura_${factura.facturenumber}.pdf`
+          `Factura-${factura.facturenumber}.pdf`
         );
+        formData.append('pdf2', pdfBlob2, 'Pasos_Pago.pdf');
 
         // Enviar la solicitud al backend
         const response = await axios.post(
@@ -495,29 +611,34 @@ button {
 }
 
 .btn-email {
-  background-color: #f39c12; /* Color naranja para el botón */
+  background-color: #007bff; /* Azul predeterminado */
   color: white;
-  padding: 5px 10px;
   border: none;
+  padding: 8px 12px;
   border-radius: 4px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  transition: background-color 0.3s;
 }
 
 .btn-email:hover {
-  background-color: #e67e22;
+  background-color: #0056b3; /* Azul más oscuro */
 }
 
-.btn-email:disabled {
-  background-color: #d35400;
-  cursor: not-allowed;
+.btn-email.disabled-button {
+  background-color: #cccccc; /* Gris para el estado deshabilitado */
+  color: #666666; /* Texto gris claro */
+  cursor: not-allowed; /* Icono de bloqueo */
+  cursor: not-allowed; /* Cambiar cursor cuando está deshabilitado */
 }
 
-.btn-email i {
-  margin-right: 5px; /* Espacio entre ícono y texto */
+
+.btn-disabled {
+  background-color: #ccc !important; /* Gris */
+  color: #666 !important; /* Gris oscuro */
+  cursor: not-allowed !important; /* Cursor de no permitido */
+  pointer-events: none; /* Deshabilita el clic */
 }
+
 
 .btn-delete {
   background-color: #e74c3c;
@@ -587,5 +708,7 @@ button {
   justify-content: center; /* Centrar el contenido */
   align-items: center; /* Centrar verticalmente */
 }
+
+
 </style>
 
