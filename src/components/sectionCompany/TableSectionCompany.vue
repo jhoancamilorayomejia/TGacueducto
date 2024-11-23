@@ -7,6 +7,7 @@
       <div class="user-info">
         <h4>Bienvenido, {{ userName }}</h4>
         <h5>Correo: {{ userEmail }} | NIT: {{ userNit }}</h5>
+        
       </div>
     </div>
     <table class="usuario-table">
@@ -67,6 +68,7 @@ export default {
     this.userID = localStorage.getItem('userID');
     this.userName = localStorage.getItem('userName');
     this.userNit = localStorage.getItem('userNit');
+    //this.userPhone = localStorage.getItem('userPhone');
   },
   methods: {
     async fetchUsuarios() {

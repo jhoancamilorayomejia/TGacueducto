@@ -186,11 +186,63 @@ export default {
     doc.text(`Contraseña: ${this.password}`, 10, 75);
 
       const pdfBlob = doc.output('blob');
+      
+       // Crear el segundo PDF
+       const doc2 = new jsPDF();
+       doc2.setFont('Courier', 'normal');
+       doc2.setFontSize(15);
+       doc.setTextColor(0, 0, 0); // Negro
+       doc2.text('Pasos detallados para realizar el Cambio de Clave.', 10, 10);
+       // Línea divisoria en color azul agua
+       doc2.setFontSize(8);
+       doc2.text('Para poder realizar el cambio de clave por una nueva deberá iniciar sesion en la plataforma. ', 10, 20);
+       doc2.text('Posteriormente le dará click al botón de "Cambio de Clave" que esta al inicio de sesion', 10, 25);
+       // Línea divisoria en color azul agua
+       
+      // Obtener la imagen para el segundo PDF     
+      const imageUrl = '/img/cambioclave.png'; // Ruta de la nueva imagen
+      const image = await this.getImageDataUrl(imageUrl); // Obtener la imagen como Data URL
+
+    // Especificar el tamaño y la posición de la imagen
+      const imgWidth = 110; // Ancho de la imagen (puedes ajustar este valor)
+      const imgHeight = 43; // Alto de la imagen (puedes ajustar este valor)
+
+    // Posición de la imagen en el PDF (x, y)
+      const imgX = 10;  // Posición horizontal
+      const imgY = 30;  // Posición vertical
+
+    // Añadir la imagen en el segundo PDF
+      doc2.addImage(image, 'PNG', imgX, imgY, imgWidth, imgHeight);
+
+    // Agregar contenido adicional al segundo PDF (puedes seguir agregando más texto)
+     
+      
+      doc2.text('Luego te va a aparecer una nueva vista la cual tiene los pasos de crear nueva clave y confirmar nueva clave.', 10, 76);
+      doc2.text('Digita la nueva clave, que sea propia para su seguridad ', 10, 80);
+
+      const imageUrl3 = '/img/pasosCambio.png'; // Ruta de la nueva imagen
+      const image3 = await this.getImageDataUrl(imageUrl3); // Obtener la imagen como Data URL
+
+    // Especificar el tamaño y la posición de la imagen
+      const imgWidth3 = 125; // Ancho de la imagen (puedes ajustar este valor)
+      const imgHeight3 = 50; // Alto de la imagen (puedes ajustar este valor)
+
+    // Posición de la imagen en el PDF (x, y)
+      const imgX3 = 10;  // Posición horizontal
+      const imgY3 = 84;  // Posición vertical
+      // Añadir la imagen en el segundo PDF
+      doc2.addImage(image3, 'PNG', imgX3, imgY3, imgWidth3, imgHeight3);
+
+     
+
+      const pdfBlob2 = doc2.output('blob'); // Exportar segundo PDF
+
       const formData = new FormData();
       formData.append('to', this.email);
       formData.append('subject', 'Datos de Registro');
       formData.append('body', 'Se adjuntan sus credenciales de acceso.');
       formData.append('pdf', pdfBlob, 'Datos_Registro.pdf');
+      formData.append('pdf2', pdfBlob2, 'Cambio_de_Clave.pdf');
 
       const response = await axios.post('http://localhost:8081/api/send-email', formData, {
         headers: {

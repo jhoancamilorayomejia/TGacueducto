@@ -382,10 +382,10 @@ export default {
       // Añadir la imagen en el segundo PDF
       doc2.addImage(image2, 'PNG', imgX2, imgY2, imgWidth2, imgHeight2);
       
-      doc2.text('Al momento de iniciar sesion se le mostrara una tabla con información importante sobre facturas anteriores y la', 10, 83);
-      doc2.text('actual teniendo en cuenta las fechas especificadas.', 10, 87);
+      doc2.text('Al momento de iniciar sesion se le mostrará una tabla con información importante sobre facturas anteriores y la', 10, 83);
+      doc2.text('actual, teniendo en cuenta las fechas especificadas.', 10, 87);
       doc2.text('Al momento de hacer el pago se mostrará el estado (Pendiente, Pagado o vencido) en el que se encuentra la factura y ', 10, 91);
-      doc2.text('se mostrará habilidado el boton de "Proceso de Pago" para su respectivo pago de factura.', 10, 95);
+      doc2.text('se mostrará habilidado el botón de "Proceso de Pago" para su respectivo pago de factura.', 10, 95);
 
       const imageUrl3 = '/img/paso2.png'; // Ruta de la nueva imagen
       const image3 = await this.getImageDataUrl(imageUrl3); // Obtener la imagen como Data URL
@@ -414,7 +414,7 @@ export default {
       doc2.addImage(image4, 'PNG', imgX4, imgY4, imgWidth4, imgHeight4);
 
       doc2.text('Al momento de darle click a "Proceso de Pago" se va a mostrar una ventana la cual tendrá el valor correspondiente', 10, 168);
-      doc2.text('a pagar y con una referencia de pago el cual sera unico para su recibo.', 10, 171);
+      doc2.text('a pagar y con una referencia de pago el cuál sera unico para su recibo.', 10, 171);
       doc2.text('Encontrará un botón el cual dirá "Confirmar Pago" para habilitar un segundo botón que dirá "Pagar con Mercado pago".', 10, 175);
       
       
@@ -432,7 +432,7 @@ export default {
       doc2.addImage(image5, 'PNG', imgX5, imgY5, imgWidth5, imgHeight5);
 
       //ultimo
-      doc2.text('Lo redireccionará la plataforma de mercado pago en la cual podras efectuar el pago con el metodo que quieras.', 10, 220);
+      doc2.text('Lo redireccionará la plataforma de mercado pago, en la cual podras efectuar el pago con el metodo que quieras.', 10, 220);
       
       const imageUrl6 = '/img/paso5.png'; // Ruta de la nueva imagen
       const image6 = await this.getImageDataUrl(imageUrl6); // Obtener la imagen como Data URL
